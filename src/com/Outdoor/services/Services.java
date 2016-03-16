@@ -18,6 +18,7 @@ import org.glassfish.jersey.server.mvc.Viewable;
 import org.json.simple.JSONObject;
 
 import com.Outdoor.models.DBConnection;
+import com.Outdoor.models.PositionModel;
 import com.Outdoor.models.UserModel;
 
 @Path("/")
@@ -39,7 +40,7 @@ public class Services {
 			@FormParam("password") String pass, @FormParam("question") String question, @FormParam("answer") String ans,
 			@FormParam("alternative") String alt) {
 
-		JSONObject json1 = new JSONObject();
+		//JSONObject json1 = new JSONObject();
 		UserModel user = UserModel.addNewUser(name, email, pass, question, ans, alt);
 		JSONObject json = new JSONObject();
 		if (user != null) {
@@ -92,6 +93,27 @@ public class Services {
 		return json.toJSONString();
 	}
 
+
+	@POST
+	@Path("/getLastPosition")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String getLastPosition(@FormParam("email") String email) {
+		
+		PositionModel pos = UserModel.getLastPosition(email);
+		JSONObject json = new JSONObject();
+		if(pos != null){
+			json.put("status", 1);
+			json.put("lat", pos.getLat());
+			json.put("long", pos.getLon());
+			
+		}else{
+			json.put("status", 0);
+		}
+		
+		return json.toJSONString();
+	}
+
+	
 	@GET
 	@Path("/")
 	@Produces(MediaType.TEXT_PLAIN)

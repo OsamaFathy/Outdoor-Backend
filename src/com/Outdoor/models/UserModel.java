@@ -100,7 +100,6 @@ public class UserModel {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		System.out.println("OOOOOOOOOOOOOOOOOOOOOOOOOO");
 		return null;
 	}
 
@@ -156,6 +155,28 @@ public class UserModel {
 		return false;
 	}
 
+	public static PositionModel getLastPosition(String email) {
+		try{
+			PositionModel pos = new PositionModel();
+			Connection conn = DBConnection.getActiveConnection();
+			String sql = "SELECT `lat`, `long` FROM user WHERE `user_email` = ?";
+			PreparedStatement stmt;
+			stmt = conn.prepareStatement(sql);
+			stmt.setString(1, email);
+			
+			ResultSet rs = stmt.executeQuery();
+			if (rs.next()) {
+				pos.setLat(rs.getDouble("lat"));
+				pos.setLon(rs.getDouble("long"));
+				return pos;
+			}
+			return null;
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
 	public String getQuestion() {
 		return question;
 	}
