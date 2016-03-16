@@ -39,7 +39,7 @@ public class Services {
 			@FormParam("password") String pass, @FormParam("question") String question, @FormParam("answer") String ans,
 			@FormParam("alternative") String alt) {
 
-		JSONObject json1 = new JSONObject();
+		//JSONObject json1 = new JSONObject();
 		UserModel user = UserModel.addNewUser(name, email, pass, question, ans, alt);
 		JSONObject json = new JSONObject();
 		if (user != null) {
@@ -87,6 +87,28 @@ public class Services {
 			@FormParam("lat") String lat, @FormParam("long") String lon) {
 		
 		Boolean status = UserModel.updateUserPosition(email, Double.parseDouble(lat), Double.parseDouble(lon));
+		JSONObject json = new JSONObject();
+		json.put("status", status ? 1 : 0);
+		return json.toJSONString();
+	}
+	
+	@POST
+	@Path("/follow")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String follow(@FormParam("email") String email,
+			@FormParam("friendEmail") String friendEmail) {
+		Boolean status = UserModel.followFriend(email, friendEmail) ;
+		JSONObject json = new JSONObject();
+		json.put("status", status ? 1 : 0);
+		return json.toJSONString();
+	}
+	
+	@POST
+	@Path("/unfollow")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String unfollow(@FormParam("email") String email,
+			@FormParam("friendEmail") String friendEmail) {
+		Boolean status = UserModel.unfollowFriend(email, friendEmail) ;
 		JSONObject json = new JSONObject();
 		json.put("status", status ? 1 : 0);
 		return json.toJSONString();
