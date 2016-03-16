@@ -154,6 +154,38 @@ public class UserModel {
 		}
 		return false;
 	}
+	
+	public static boolean followFriend(String email, String friendEmail) {
+		try{
+			Connection conn = DBConnection.getActiveConnection();
+			String sql = "INSERT INTO user_has_friend (`user_email`, `friend_user_email`) VALUES (?, ?)";
+			PreparedStatement stmt;
+			stmt = conn.prepareStatement(sql);
+			stmt.setString(1, email);
+			stmt.setString(2, friendEmail);
+			stmt.executeUpdate();
+			return true;
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
+	public static boolean unfollowFriend(String email, String friendEmail) {
+		try{
+			Connection conn = DBConnection.getActiveConnection();
+			String sql = "DELETE FROM user_has_friend WHERE `user_email` = ? AND `friend_user_email` = ?" ;
+			PreparedStatement stmt;
+			stmt = conn.prepareStatement(sql);
+			stmt.setString(1, email);
+			stmt.setString(2, friendEmail);
+			stmt.executeUpdate();
+			return true;
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+		return false;
+	}
 
 	public static PositionModel getLastPosition(String email) {
 		try{

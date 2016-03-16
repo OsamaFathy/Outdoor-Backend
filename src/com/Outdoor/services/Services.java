@@ -92,6 +92,28 @@ public class Services {
 		json.put("status", status ? 1 : 0);
 		return json.toJSONString();
 	}
+	
+	@POST
+	@Path("/follow")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String follow(@FormParam("email") String email,
+			@FormParam("friendEmail") String friendEmail) {
+		Boolean status = UserModel.followFriend(email, friendEmail) ;
+		JSONObject json = new JSONObject();
+		json.put("status", status ? 1 : 0);
+		return json.toJSONString();
+	}
+	
+	@POST
+	@Path("/unfollow")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String unfollow(@FormParam("email") String email,
+			@FormParam("friendEmail") String friendEmail) {
+		Boolean status = UserModel.unfollowFriend(email, friendEmail) ;
+		JSONObject json = new JSONObject();
+		json.put("status", status ? 1 : 0);
+		return json.toJSONString();
+	}
 
 
 	@POST
