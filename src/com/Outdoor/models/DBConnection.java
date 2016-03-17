@@ -19,7 +19,6 @@ public class DBConnection {
 			connection = DriverManager
 					.getConnection("jdbc:mysql://localhost:3306/outdoordb?"
 							+ "user=root&password=1234&characterEncoding=utf8");
-			System.out.println(connection.toString());
 			return connection;
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();

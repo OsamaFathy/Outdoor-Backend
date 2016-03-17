@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
@@ -132,6 +133,36 @@ public class Services {
 			json.put("status", 0);
 		}
 		
+		return json.toJSONString();
+	}
+	
+	@POST
+	@Path("/getFollowers")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String getFollowers(@FormParam("email") String email) {
+		ArrayList<UserModel> users = UserModel.getFollowers(email);
+		JSONObject json = new JSONObject();
+		if (users != null) {
+			json.put("status", 1);
+			
+			int ind = 0;
+			for(UserModel user : users){
+				JSONObject cur = new JSONObject();
+				
+				cur.put("email", user.getEmail());
+				cur.put("name", user.getName());
+				cur.put("password", user.getPass());
+				cur.put("question", user.getQuestion());
+				cur.put("answer", user.getAnswer());
+				cur.put("alternative", user.getAlternative());
+				cur.put("lat", user.getLat());
+				cur.put("long", user.getLon());
+				json.put(ind++, cur);
+			}
+			return json.toJSONString();
+		}else{
+			json.put("status", 0);
+		}
 		return json.toJSONString();
 	}
 

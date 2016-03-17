@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import com.Outdoor.models.DBConnection;
 import com.Outdoor.models.UserModel;
@@ -69,11 +70,9 @@ public class UserModel {
 			Connection conn = DBConnection.getActiveConnection();
 			String sql = "INSERT INTO user(`user_email`, `username`, `password`, `security_question`"
 					+ ", `security_answer`, `alternative_email`) VALUES(?,?,?,?,?,?)";
-			// System.out.println(sql);
 
 			PreparedStatement stmt;
 			stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-			System.out.println(stmt.toString());
 			stmt.setString(1, email);
 			stmt.setString(2, name);
 			stmt.setString(3, pass);
@@ -115,7 +114,6 @@ public class UserModel {
 			stmt.setString(1, email);
 			stmt.setString(2, pass);
 			
-			System.out.println(stmt.toString());
 			ResultSet rs = stmt.executeQuery();
 			
 			if (rs.next()) {
@@ -209,6 +207,34 @@ public class UserModel {
 		return null;
 	}
 	
+	public static ArrayList<UserModel> getFollowers(String email){
+		try{
+			ArrayList<UserModel> followers = new ArrayList<>();
+			Connection conn = DBConnection.getActiveConnection();
+			String sql = "SELECT * FROM `user` WHERE `user_email` IN "
+					+ "(SELECT `user_email` FROM `user_has_friend`"
+					+ "WHERE `friend_user_email`=?)";
+			PreparedStatement stmt = conn.prepareStatement(sql);
+			stmt.setString(1, email);
+			ResultSet rs = stmt.executeQuery();
+			while(rs.next()){
+				UserModel user = new UserModel();
+				user.email = rs.getString("user_email");
+				user.pass = rs.getString("password");
+				user.name = rs.getString("username");
+				user.question = rs.getString("security_question");
+				user.answer = rs.getString("security_answer");
+				user.alternative = rs.getString("alternative_email");
+				user.lat = rs.getDouble("lat");
+				user.lon = rs.getDouble("long");
+				followers.add(user);
+			}
+			return followers;
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+		return null;
+	}
 	public String getQuestion() {
 		return question;
 	}
