@@ -18,6 +18,7 @@ import javax.ws.rs.core.Response;
 import org.glassfish.jersey.server.mvc.Viewable;
 import org.json.simple.JSONObject;
 
+import com.Outdoor.models.CheckinModel;
 import com.Outdoor.models.DBConnection;
 import com.Outdoor.models.PositionModel;
 import com.Outdoor.models.UserModel;
@@ -37,15 +38,15 @@ public class Services {
 	@POST
 	@Path("/signup")
 	@Produces(MediaType.TEXT_PLAIN)
-	public String signUp(@FormParam("email") String email, @FormParam("name") String name,
-			@FormParam("password") String pass, @FormParam("question") String question, @FormParam("answer") String ans,
-			@FormParam("alternative") String alt) {
+	public String signUp(@FormParam("email") String email, @FormParam("username") String name,
+			@FormParam("password") String pass, @FormParam("securityQuestion") String question, @FormParam("securityAnswer") String ans,
+			@FormParam("altEmail") String alt) {
 
 		//JSONObject json1 = new JSONObject();
 		UserModel user = UserModel.addNewUser(name, email, pass, question, ans, alt);
 		JSONObject json = new JSONObject();
 		if (user != null) {
-			json.put("status", 1);
+			json.put("success", 1);
 			json.put("email", user.getEmail());
 			json.put("name", user.getName());
 			json.put("password", user.getPass());
@@ -63,11 +64,11 @@ public class Services {
 	@POST
 	@Path("/login")
 	@Produces(MediaType.TEXT_PLAIN)
-	public String login(@FormParam("email") String email, @FormParam("password") String pass) {
+	public String login(@FormParam("loginEmail") String email, @FormParam("loginPassword") String pass) {
 		UserModel user = UserModel.login(email, pass);
 		JSONObject json = new JSONObject();
 		if (user != null) {
-			json.put("status", 1);
+			json.put("success", 1);
 			json.put("email", user.getEmail());
 			json.put("name", user.getName());
 			json.put("password", user.getPass());
@@ -77,7 +78,7 @@ public class Services {
 			json.put("lat", user.getLat());
 			json.put("long", user.getLon());
 		}else{
-			json.put("status", 0);
+			json.put("success", 0);
 		}
 		return json.toJSONString();
 	}
@@ -144,11 +145,10 @@ public class Services {
 		JSONObject json = new JSONObject();
 		if (users != null) {
 			json.put("status", 1);
-			
+
 			int ind = 0;
 			for(UserModel user : users){
 				JSONObject cur = new JSONObject();
-				
 				cur.put("email", user.getEmail());
 				cur.put("name", user.getName());
 				cur.put("password", user.getPass());
@@ -162,6 +162,43 @@ public class Services {
 			return json.toJSONString();
 		}else{
 			json.put("status", 0);
+		}
+		return json.toJSONString();
+	}
+
+	
+	@POST
+	@Path("/getProfile")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String getProfile(@FormParam("my_email") String myEmail,@FormParam("his_email") String hisEmail) {
+		ArrayList<CheckinModel> checkins = CheckinModel.getMyCheckins(hisEmail);
+		JSONObject json = new JSONObject();
+		if (checkins != null) {
+			json.put("success", 1);
+			
+			JSONObject JSCheckins = new JSONObject();
+			int ind = 0;
+			for(CheckinModel checkin : checkins){
+				JSONObject cur = new JSONObject();
+				
+				cur.put("checkin_id", checkin.getCheckinID());
+				cur.put("checkin_user_email", checkin.getCheckinUserEmail());
+				cur.put("date", checkin.getDate());
+				cur.put("status", checkin.getStatus());
+				cur.put("checkin_place_name", checkin.getCheckinPlaceName());
+				cur.put("likes", checkin.getLikes());
+				cur.put("if_liked", checkin.getLikedByMe());
+			
+				JSCheckins.put(ind++, cur);
+			}
+			String user = UserModel.getUserName(hisEmail);
+			boolean followed = UserModel.Followed(myEmail, hisEmail);
+			json.put("username", user);
+			json.put("is_friend", (followed?1:0));
+			json.put("array", JSCheckins);
+			return json.toJSONString();
+		}else{
+			json.put("success", 0);
 		}
 		return json.toJSONString();
 	}

@@ -1,4 +1,4 @@
-package com.Outdoor.models;
+	package com.Outdoor.models;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -136,6 +136,46 @@ public class UserModel {
 		return null;
 	}
 
+	public static String getUserName(String email) {
+		try {
+			Connection conn = DBConnection.getActiveConnection();
+			String sql = "SELECT * FROM user WHERE `user_email` = ?";
+			PreparedStatement stmt;
+			stmt = conn.prepareStatement(sql);
+			stmt.setString(1, email);
+
+			ResultSet rs = stmt.executeQuery();
+			
+			if (rs.next()) {
+				return rs.getString("username");
+			}
+			return null;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public static boolean Followed(String myEmail, String hisEmail) {
+		try {
+			Connection conn = DBConnection.getActiveConnection();
+			String sql = "SELECT * FROM `user_has_friend` WHERE `user_email` = ? AND `friend_user_email` = ?";
+			PreparedStatement stmt;
+			stmt = conn.prepareStatement(sql);
+			stmt.setString(1, myEmail);
+			stmt.setString(2, hisEmail);
+
+			ResultSet rs = stmt.executeQuery();
+			
+			return rs.next();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return false;
+	}
+		
 	public static boolean updateUserPosition(String email, Double lat, Double lon) {
 		try{
 			Connection conn = DBConnection.getActiveConnection();
@@ -191,6 +231,7 @@ public class UserModel {
 			Connection conn = DBConnection.getActiveConnection();
 			String sql = "SELECT `lat`, `long` FROM user WHERE `user_email` = ?";
 			PreparedStatement stmt;
+			System.out.println(sql);
 			stmt = conn.prepareStatement(sql);
 			stmt.setString(1, email);
 			
@@ -235,6 +276,7 @@ public class UserModel {
 		}
 		return null;
 	}
+	
 	public String getQuestion() {
 		return question;
 	}
