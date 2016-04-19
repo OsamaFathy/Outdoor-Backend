@@ -16,6 +16,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.glassfish.jersey.server.mvc.Viewable;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import com.Outdoor.models.CheckinModel;
@@ -143,8 +144,9 @@ public class Services {
 	public String getFollowers(@FormParam("email") String email) {
 		ArrayList<UserModel> users = UserModel.getFollowers(email);
 		JSONObject json = new JSONObject();
+		JSONArray JSUsers = new JSONArray();
 		if (users != null) {
-			json.put("status", 1);
+			json.put("success", 1);
 
 			int ind = 0;
 			for(UserModel user : users){
@@ -157,11 +159,14 @@ public class Services {
 				cur.put("alternative", user.getAlternative());
 				cur.put("lat", user.getLat());
 				cur.put("long", user.getLon());
-				json.put(ind++, cur);
+				JSUsers.add(cur);
 			}
+			json.put("array", JSUsers);
+		
+			
 			return json.toJSONString();
 		}else{
-			json.put("status", 0);
+			json.put("success", 0);
 		}
 		return json.toJSONString();
 	}
@@ -176,7 +181,7 @@ public class Services {
 		if (checkins != null) {
 			json.put("success", 1);
 			
-			JSONObject JSCheckins = new JSONObject();
+			JSONArray JSCheckins = new JSONArray();
 			int ind = 0;
 			for(CheckinModel checkin : checkins){
 				JSONObject cur = new JSONObject();
@@ -189,7 +194,7 @@ public class Services {
 				cur.put("likes", checkin.getLikes());
 				cur.put("if_liked", checkin.getLikedByMe());
 			
-				JSCheckins.put(ind++, cur);
+				JSCheckins.add(cur);
 			}
 			String user = UserModel.getUserName(hisEmail);
 			boolean followed = UserModel.Followed(myEmail, hisEmail);
