@@ -184,8 +184,7 @@ public class Services {
 			JSONArray JSCheckins = new JSONArray();
 			int ind = 0;
 			for(CheckinModel checkin : checkins){
-				JSONObject cur = new JSONObject();
-				
+				JSONObject cur = new JSONObject();		
 				cur.put("checkin_id", checkin.getCheckinID());
 				cur.put("checkin_user_email", checkin.getCheckinUserEmail());
 				cur.put("date", checkin.getDate());
@@ -208,7 +207,26 @@ public class Services {
 		return json.toJSONString();
 	}
 
-	
+
+	@POST
+	@Path("/getNearestLocation")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String getNearestLocation(@FormParam("lat") Double lat,@FormParam("long") Double lon) {
+		PositionModel pos = PositionModel.getNearestLocation(lat, lon);
+		JSONObject json = new JSONObject();
+		if(pos != null){
+			json.put("success", 1);
+			json.put("name", pos.getName());
+			json.put("rate", pos.getRate());
+			json.put("numberOfUsers", pos.getNumberOfUsers());
+			json.put("placeUserEmail", pos.getPlaceUserEmail());
+			json.put("lat", pos.getLat());
+			json.put("long", pos.getLon());	
+		}else{
+			json.put("success", 0);
+		}
+		return json.toJSONString();
+	}
 	@GET
 	@Path("/")
 	@Produces(MediaType.TEXT_PLAIN)
