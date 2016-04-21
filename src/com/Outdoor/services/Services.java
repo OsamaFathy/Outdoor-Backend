@@ -363,6 +363,37 @@ public class Services {
 		return json.toJSONString();
 	}
 	
+	@POST
+	@Path("/getFriendsCheckins")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String getFriendsCheckins(@FormParam("email") String email) {
+		ArrayList<CheckinModel> checkins = CheckinModel.getFriendsCheckins(email);
+		JSONObject json = new JSONObject();
+		if (checkins != null) {
+			json.put("success", 1);
+			
+			JSONArray JSCheckins = new JSONArray();
+			
+			for(CheckinModel checkin : checkins){
+				JSONObject cur = new JSONObject();		
+				cur.put("checkin_id", checkin.getCheckinID());
+				cur.put("checkin_user_email", checkin.getCheckinUserEmail());
+				cur.put("date", checkin.getDate());
+				cur.put("status", checkin.getStatus());
+				cur.put("checkin_place_name", checkin.getCheckinPlaceName());
+				cur.put("likes", checkin.getLikes());
+				cur.put("if_liked", checkin.getLikedByMe());
+			
+				JSCheckins.add(cur);
+			}
+			json.put("array", JSCheckins);
+			return json.toJSONString();
+		}else{
+			json.put("success", 0);
+		}
+		return json.toJSONString();
+	}
+	
 	@GET
 	@Path("/")
 	@Produces(MediaType.TEXT_PLAIN)

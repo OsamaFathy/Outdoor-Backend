@@ -70,6 +70,59 @@ public class CheckinModel {
 		return null;
 	}
 	
+	public static ArrayList<CheckinModel> getFriendsCheckins(String email){
+		try{
+			ArrayList<CheckinModel> checkins = new ArrayList<>();
+			Connection conn = DBConnection.getActiveConnection();
+			String sql = "SELECT * FROM checkin WHERE `checkin_user_email` IN "
+			+ "( SELECT `friend_user_email` FROM user_has_friend WHERE `user_email` = ?)  ORDER BY date DESC" ;
+
+			PreparedStatement stmt = conn.prepareStatement(sql);
+			stmt.setString(1, email);
+			
+			ResultSet rs = stmt.executeQuery();
+			
+			while(rs.next()){
+				CheckinModel curCheckin = new CheckinModel();
+				curCheckin.checkinID = rs.getInt("checkin_id");
+				curCheckin.checkinUserEmail = rs.getString("checkin_user_email");
+				curCheckin.date = rs.getString("date");
+				curCheckin.status = rs.getString("status");
+				curCheckin.checkinPlaceName = rs.getString("checkin_place_name");
+				
+				
+				sql = "SELECT * FROM `user_likes_checkin` WHERE `checkin_checkin_id` = ?" ;
+				PreparedStatement stmt2 = conn.prepareStatement(sql,
+			            ResultSet.TYPE_SCROLL_INSENSITIVE,
+			            ResultSet.CONCUR_READ_ONLY);
+				stmt2.setInt(1, curCheckin.checkinID);
+				ResultSet rs2 = stmt2.executeQuery();
+				
+				if(rs2.next()){
+					rs2.last();
+					curCheckin.likes = rs2.getRow();
+				}else{
+					curCheckin.likes = 0;
+				}
+				
+				
+				sql = "SELECT * FROM `user_likes_checkin` WHERE `user_email` = ? AND `checkin_checkin_id` = ?";
+				PreparedStatement stmt3 = conn.prepareStatement(sql,
+			            ResultSet.TYPE_SCROLL_INSENSITIVE,
+			            ResultSet.CONCUR_READ_ONLY);
+				stmt3.setString(1, curCheckin.checkinUserEmail);
+				stmt3.setInt(2, curCheckin.checkinID);
+				ResultSet rs3 = stmt3.executeQuery();
+				curCheckin.likedByMe = (rs3.next()?1:0);
+				checkins.add(curCheckin);
+			}
+			return checkins;
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
 	public static boolean addLike(String email, int checkin_ID){
 		try{
 			Connection conn = DBConnection.getActiveConnection();
