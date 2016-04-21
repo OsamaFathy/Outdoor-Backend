@@ -3,7 +3,10 @@ package com.Outdoor.models;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+
+import com.mysql.jdbc.Statement;
 
 public class PositionModel {
 	private String name;
@@ -49,6 +52,66 @@ public class PositionModel {
 		return null;
 	}
 	
+	public static boolean placeFound(String placeName) {
+		try{
+			Connection conn = DBConnection.getActiveConnection();
+			String sql = "SELECT * FROM place WHERE placeName = ?";
+					
+			
+			PreparedStatement stmt;
+			System.out.println(sql);
+			stmt = conn.prepareStatement(sql);
+			stmt.setString(1, placeName);
+			
+			
+			ResultSet rs = stmt.executeQuery();
+			if (rs.next()) {
+				return true ;
+			}
+			
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
+	public static boolean addPlace(String placeName, double rate, int numberOfUsers, String email, double lon, double lat) {
+		try{
+			Connection conn = DBConnection.getActiveConnection();
+			String sql = "INSERT INTO location (`longitude`, `latitude`) VALUES (?, ?)";
+			
+			PreparedStatement stmt;
+			stmt = conn.prepareStatement(sql);			
+			stmt.setDouble(1, lon);
+			stmt.setDouble(2, lat);
+			stmt.executeUpdate();
+			
+			int locationID = 0 ;
+			sql = "SELECT `location_id` FROM location WHERE `longitude` = ? AND `latitude` = ?" ;
+			stmt = conn.prepareStatement(sql);			
+			stmt.setDouble(1, lon);
+			stmt.setDouble(2, lat);
+			ResultSet rs = stmt.executeQuery() ;
+			if (rs.next()) {
+				locationID = rs.getInt(1) ;
+			}
+			sql = "INSERT INTO place (`placeName`, `rate`, `numberOfUsers`, `place_user_email`, `location_id`) VALUES "
+					+ "(?, ?, ?, ?, ?)";
+			stmt = conn.prepareStatement(sql, 
+					ResultSet.TYPE_SCROLL_INSENSITIVE,
+		            ResultSet.CONCUR_READ_ONLY);
+			stmt.setString(1, placeName);
+			stmt.setDouble(2, rate);
+			stmt.setInt(3, numberOfUsers);
+			stmt.setString(4, email);
+			stmt.setInt(5, locationID);
+			stmt.executeUpdate();
+			return true ;
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+		return false;
+	}
 	
 	public double getLat() {
 		return lat;

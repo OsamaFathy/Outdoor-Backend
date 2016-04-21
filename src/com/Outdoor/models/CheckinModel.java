@@ -4,7 +4,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class CheckinModel {
 	int checkinID;
@@ -66,6 +68,65 @@ public class CheckinModel {
 			e.printStackTrace();
 		}
 		return null;
+	}
+	
+	public static boolean addLike(String email, int checkin_ID){
+		try{
+			Connection conn = DBConnection.getActiveConnection();
+			String sql = "SELECT * FROM user_likes_checkin WHERE `user_email` = ? AND `checkin_checkin_id` = ?" ;
+
+			PreparedStatement stmt = conn.prepareStatement(sql,
+					ResultSet.TYPE_SCROLL_INSENSITIVE,
+		            ResultSet.CONCUR_READ_ONLY);
+			stmt.setString(1, email);
+			stmt.setInt(2, checkin_ID);
+			ResultSet rs = stmt.executeQuery();
+			if(rs.next())
+			{
+				sql = "DELETE FROM user_likes_checkin WHERE `user_email` = ? AND `checkin_checkin_id` = ?" ;
+				stmt = conn.prepareStatement(sql,
+				ResultSet.TYPE_SCROLL_INSENSITIVE,
+		        ResultSet.CONCUR_READ_ONLY);
+				stmt.setString(1, email);
+				stmt.setInt(2, checkin_ID);
+				stmt.executeUpdate() ;
+				return true ;
+			}
+			sql = "INSERT INTO user_likes_checkin (`user_email`, `checkin_checkin_id`) VALUES (?, ?)" ;
+			stmt = conn.prepareStatement(sql,
+			ResultSet.TYPE_SCROLL_INSENSITIVE,
+	        ResultSet.CONCUR_READ_ONLY);
+			stmt.setString(1, email);
+			stmt.setInt(2, checkin_ID);
+			stmt.executeUpdate() ;
+			return false ;
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
+	public static boolean addCheckin(String email, String status, String placeName){
+		try{
+			Connection conn = DBConnection.getActiveConnection();
+			String sql = "INSERT INTO `checkin` (`checkin_user_email`, `date`, `status`, `checkin_place_name`) VALUES"
+					+ "(?, ?, ?, ?)" ;
+			Date d1 = new Date();
+			SimpleDateFormat df = new SimpleDateFormat("YYYY/MM/dd HH:mm:ss");
+			String formattedDate = df.format(d1);
+			PreparedStatement stmt = conn.prepareStatement(sql,
+					ResultSet.TYPE_SCROLL_INSENSITIVE,
+		            ResultSet.CONCUR_READ_ONLY);
+			stmt.setString(1, email);
+			stmt.setString(2, formattedDate);
+			stmt.setString(3, status);
+			stmt.setString(4, placeName);
+			stmt.executeUpdate();
+			return true ;
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+		return false;
 	}
 
 	public int getCheckinID() {

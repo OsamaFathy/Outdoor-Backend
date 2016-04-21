@@ -227,6 +227,57 @@ public class Services {
 		}
 		return json.toJSONString();
 	}
+	
+	@POST
+	@Path("/like")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String like(@FormParam("email") String email, @FormParam("checkin_id") int checkinID) {
+		boolean isLiked = CheckinModel.addLike(email, checkinID) ;
+		JSONObject json = new JSONObject();
+		if (isLiked == true) {
+			json.put("success", 0);
+		}else{
+			json.put("success", 1);
+		}
+		return json.toJSONString();
+	}
+	
+	@POST
+	@Path("/checkin")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String checkin(@FormParam("email") String email, @FormParam("placeName") String placeName, 
+			@FormParam("status") String status) {
+		boolean exists = PositionModel.placeFound(placeName) ;
+		JSONObject json = new JSONObject();
+		if (exists == true) {
+			boolean operation = CheckinModel.addCheckin(email, status, placeName) ;
+			if(operation==true)
+				json.put("success", 1);
+			else
+				json.put("success", 0) ;
+		}else{
+			json.put("success", 0);
+			json.put("message", "Can't find such a place") ;
+		}
+		return json.toJSONString();
+	}
+	
+	@POST
+	@Path("/addPlace")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String addPlace(@FormParam("placeName") String placeName, @FormParam("rate") double rate,
+			@FormParam("numberOfUsers") int numberOfUsers, @FormParam("email") String email,
+			@FormParam("lon") double lon, @FormParam("lat") double lat) {
+		boolean operation = PositionModel.addPlace(placeName, rate, numberOfUsers, email, lon, lat) ;
+		JSONObject json = new JSONObject();
+		if (operation == true) {
+			json.put("success", 1) ;
+		}else{
+			json.put("success", 0);
+		}
+		return json.toJSONString();
+	}
+	
 	@GET
 	@Path("/")
 	@Produces(MediaType.TEXT_PLAIN)
