@@ -22,6 +22,7 @@ import org.json.simple.JSONObject;
 import com.Outdoor.models.CheckinModel;
 import com.Outdoor.models.CommentModel;
 import com.Outdoor.models.DBConnection;
+import com.Outdoor.models.NotificationModel;
 import com.Outdoor.models.PositionModel;
 import com.Outdoor.models.UserModel;
 
@@ -384,6 +385,33 @@ public class Services {
 				cur.put("likes", checkin.getLikes());
 				cur.put("if_liked", checkin.getLikedByMe());
 			
+				JSCheckins.add(cur);
+			}
+			json.put("array", JSCheckins);
+			return json.toJSONString();
+		}else{
+			json.put("success", 0);
+		}
+		return json.toJSONString();
+	}
+	
+	@POST
+	@Path("/getAllNotifications")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String getAllNotifications(@FormParam("email") String email) {
+		ArrayList<NotificationModel> notifications = NotificationModel.getMyNotifications(email);
+		JSONObject json = new JSONObject();
+		if (notifications != null) {
+			json.put("success", 1);
+			
+			JSONArray JSCheckins = new JSONArray();
+			
+			for(NotificationModel notification : notifications){
+				JSONObject cur = new JSONObject();		
+				cur.put("notification_id", notification.getNotificationID());
+				cur.put("date", notification.getDate());
+				cur.put("text", notification.getText());
+				cur.put("action", notification.getAction());
 				JSCheckins.add(cur);
 			}
 			json.put("array", JSCheckins);
