@@ -129,6 +129,30 @@ public class CheckinModel {
 		return false;
 	}
 
+	public static ArrayList<CommentModel> getComments(int checkinID){
+		try{
+			ArrayList<CommentModel> comments = new ArrayList<>();
+			Connection conn = DBConnection.getActiveConnection();
+			String sql = "SELECT * FROM comment WHERE `checkin_id` = ?" ;
+			PreparedStatement stmt = conn.prepareStatement(sql,
+					ResultSet.TYPE_SCROLL_INSENSITIVE,
+		            ResultSet.CONCUR_READ_ONLY);
+			stmt.setInt(1, checkinID);
+			ResultSet rs = stmt.executeQuery();
+			while(rs.next()){
+				CommentModel comment = new CommentModel();
+				comment.setText(rs.getString("text"));
+				comment.setEmail(rs.getString("comment_user_email"));
+				comment.setDate(rs.getDate("date"));
+				comments.add(comment);
+			}
+			return comments;
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+		return null ;
+	}
+	
 	public int getCheckinID() {
 		return checkinID;
 	}

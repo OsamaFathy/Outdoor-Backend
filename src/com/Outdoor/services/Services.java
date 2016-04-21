@@ -20,6 +20,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import com.Outdoor.models.CheckinModel;
+import com.Outdoor.models.CommentModel;
 import com.Outdoor.models.DBConnection;
 import com.Outdoor.models.PositionModel;
 import com.Outdoor.models.UserModel;
@@ -148,7 +149,6 @@ public class Services {
 		if (users != null) {
 			json.put("success", 1);
 
-			int ind = 0;
 			for(UserModel user : users){
 				JSONObject cur = new JSONObject();
 				cur.put("email", user.getEmail());
@@ -182,7 +182,7 @@ public class Services {
 			json.put("success", 1);
 			
 			JSONArray JSCheckins = new JSONArray();
-			int ind = 0;
+			
 			for(CheckinModel checkin : checkins){
 				JSONObject cur = new JSONObject();		
 				cur.put("checkin_id", checkin.getCheckinID());
@@ -265,13 +265,98 @@ public class Services {
 	@POST
 	@Path("/addPlace")
 	@Produces(MediaType.TEXT_PLAIN)
-	public String addPlace(@FormParam("placeName") String placeName, @FormParam("rate") double rate,
-			@FormParam("numberOfUsers") int numberOfUsers, @FormParam("email") String email,
+	public String addPlace(@FormParam("placeName") String placeName, @FormParam("email") String email,
 			@FormParam("lon") double lon, @FormParam("lat") double lat) {
-		boolean operation = PositionModel.addPlace(placeName, rate, numberOfUsers, email, lon, lat) ;
+		boolean operation = PositionModel.addPlace(placeName, 0.0, 0, email, lon, lat) ;
 		JSONObject json = new JSONObject();
 		if (operation == true) {
 			json.put("success", 1) ;
+		}else{
+			json.put("success", 0);
+		}
+		return json.toJSONString();
+	}
+	
+	@POST
+	@Path("/savePlace")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String savePlace(@FormParam("placeName") String placeName, @FormParam("email") String email) {
+		boolean operation = UserModel.savePlace(placeName, email) ;
+		JSONObject json = new JSONObject();
+		if (operation == true) {
+			json.put("success", 1) ;
+		}else{
+			json.put("success", 0);
+		}
+		return json.toJSONString();
+	}
+	
+	@POST
+	@Path("/commentToCheckin")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String commentToCheckin(@FormParam("text") String text, @FormParam("email") String email, 
+			@FormParam("checkin_id") int checkinID) {
+		boolean operation = CommentModel.addCommentToCheckin(text, email, checkinID) ;
+		JSONObject json = new JSONObject();
+		if (operation == true) {
+			json.put("success", 1) ;
+		}else{
+			json.put("success", 0);
+		}
+		return json.toJSONString();
+	}
+	
+	@POST
+	@Path("/commentToPlace")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String commentToPlace(@FormParam("text") String text, @FormParam("email") String email, 
+			@FormParam("checkin_id") String placeName) {
+		boolean operation = CommentModel.addCommentToPlace(text, email, placeName) ;
+		JSONObject json = new JSONObject();
+		if (operation == true) {
+			json.put("success", 1) ;
+		}else{
+			json.put("success", 0);
+		}
+		return json.toJSONString();
+	}
+	
+	@POST
+	@Path("/commentToBrand")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String commentToBrand(@FormParam("text") String text, @FormParam("email") String email, 
+			@FormParam("checkin_id") int brandID) {
+		boolean operation = CommentModel.addCommentToBrand(text, email, brandID) ;
+		JSONObject json = new JSONObject();
+		if (operation == true) {
+			json.put("success", 1) ;
+		}else{
+			json.put("success", 0);
+		}
+		return json.toJSONString();
+	}
+	
+	@POST
+	@Path("/getCheckinComments")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String getCheckinComments(@FormParam("checkin_id") int checkinID) {
+		ArrayList<CommentModel> comments = CheckinModel.getComments(checkinID);
+		JSONObject json = new JSONObject();
+		JSONArray JSUsers = new JSONArray();
+		if (comments != null) {
+			json.put("success", 1);
+
+			for(CommentModel comment : comments){
+				JSONObject cur = new JSONObject();
+				cur.put("text", comment.getText());
+				cur.put("user_email", comment.getEmail());
+				cur.put("date", comment.getDate());
+				JSUsers.add(cur);
+			}
+			json.put("array", JSUsers);
+		
+			
+			return json.toJSONString();
 		}else{
 			json.put("success", 0);
 		}

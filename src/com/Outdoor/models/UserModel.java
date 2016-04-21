@@ -277,6 +277,21 @@ public class UserModel {
 		return null;
 	}
 	
+	public static boolean savePlace(String placeName, String email){
+		try{
+			Connection conn = DBConnection.getActiveConnection();
+			String sql = "INSERT INTO user_saves_place (`placeName`, `user_email`) VALUES (?, ?)";
+			PreparedStatement stmt = conn.prepareStatement(sql);
+			stmt.setString(1, placeName);
+			stmt.setString(2, email);
+			stmt.executeUpdate();
+			return true;
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
 	public String getQuestion() {
 		return question;
 	}
