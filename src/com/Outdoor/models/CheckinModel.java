@@ -152,6 +152,19 @@ public class CheckinModel {
 			stmt.setString(1, email);
 			stmt.setInt(2, checkin_ID);
 			stmt.executeUpdate() ;
+			
+			sql = "SELECT `checkin_user_email` FROM `checkin` WHERE `checkin_id` = ?" ;
+			stmt = conn.prepareStatement(sql,
+					ResultSet.TYPE_SCROLL_INSENSITIVE,
+		            ResultSet.CONCUR_READ_ONLY);
+			stmt.setInt(1, checkin_ID);
+			rs = stmt.executeQuery() ;
+			String owner_user_email = null ; 
+			while(rs.next())
+			{
+				owner_user_email = rs.getString("checkin_user_email") ;
+			}
+			NotificationModel.addNotification("Comment", email, checkin_ID, owner_user_email) ;
 			return false ;
 		}catch(SQLException e){
 			e.printStackTrace();

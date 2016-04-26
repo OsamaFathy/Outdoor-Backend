@@ -9,14 +9,34 @@ import java.util.Date;
 
 public class NotificationModel {
 	private int notificationID ;
-	private String text, action ;
-	String date ;
+	private String type, user_email, owner_user_email ;
+	private int checkinID ;
+	
+	public static boolean addNotification(String type, String user_email, int checkinID, String owner_user_email){
+		try{
+			Connection conn = DBConnection.getActiveConnection();
+			String sql = "INSERT INTO notification (`type`, `user_email`, `checkin_id`, `owner_user_email`) VALUES"
+					+ "(?, ?, ?, ?)" ;
+
+			PreparedStatement stmt = conn.prepareStatement(sql);
+			stmt.setString(1, type);
+			stmt.setString(2, user_email);
+			stmt.setInt(3, checkinID);
+			stmt.setString(4, owner_user_email);
+			
+			stmt.executeUpdate() ;
+			return true;
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+		return false;
+	}
 	
 	public static ArrayList<NotificationModel> getMyNotifications(String email){
 		try{
 			ArrayList<NotificationModel> notifications = new ArrayList<>();
 			Connection conn = DBConnection.getActiveConnection();
-			String sql = "SELECT * FROM notification WHERE `notification_user_email` = ?" ;
+			String sql = "SELECT * FROM notification WHERE `owner_user_email` = ?" ;
 
 			PreparedStatement stmt = conn.prepareStatement(sql);
 			stmt.setString(1, email);
@@ -26,9 +46,10 @@ public class NotificationModel {
 			while(rs.next()){
 				NotificationModel notification = new NotificationModel();
 				notification.setNotificationID(rs.getInt("notification_id"));
-				notification.date = rs.getString("date");
-				notification.setText(rs.getString("text"));
-				notification.setAction(rs.getString("action"));
+				notification.setType(rs.getString("type"));
+				notification.setUser_email(rs.getString("user_email"));
+				notification.setCheckinID(rs.getInt("checkin_id")) ;
+				notification.setOwner_user_email(rs.getString("owner_user_email"));
 				notifications.add(notification);
 			}
 			return notifications;
@@ -46,26 +67,37 @@ public class NotificationModel {
 		this.notificationID = notificationID;
 	}
 
-	public String getText() {
-		return text;
+	public String getType() {
+		return type;
 	}
 
-	public void setText(String text) {
-		this.text = text;
+	public void setType(String type) {
+		this.type = type;
 	}
 
-	public String getAction() {
-		return action;
+	public String getUser_email() {
+		return user_email;
 	}
 
-	public void setAction(String action) {
-		this.action = action;
+	public void setUser_email(String user_email) {
+		this.user_email = user_email;
 	}
-	
-	public String getDate() {
-		return date;
+
+	public String getOwner_user_email() {
+		return owner_user_email;
 	}
-	public void setDate(String date) {
-		this.date = date;
+
+	public void setOwner_user_email(String owner_user_email) {
+		this.owner_user_email = owner_user_email;
 	}
+
+	public int getCheckinID() {
+		return checkinID;
+	}
+
+	public void setCheckinID(int checkinID) {
+		this.checkinID = checkinID;
+	}
+
+
 }

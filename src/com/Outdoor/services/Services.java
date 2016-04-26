@@ -22,6 +22,7 @@ import org.json.simple.JSONObject;
 import com.Outdoor.models.CheckinModel;
 import com.Outdoor.models.CommentModel;
 import com.Outdoor.models.DBConnection;
+import com.Outdoor.models.MessageModel;
 import com.Outdoor.models.NotificationModel;
 import com.Outdoor.models.PositionModel;
 import com.Outdoor.models.UserModel;
@@ -409,9 +410,68 @@ public class Services {
 			for(NotificationModel notification : notifications){
 				JSONObject cur = new JSONObject();		
 				cur.put("notification_id", notification.getNotificationID());
-				cur.put("date", notification.getDate());
-				cur.put("text", notification.getText());
-				cur.put("action", notification.getAction());
+				cur.put("type", notification.getType());
+				cur.put("user_email", notification.getUser_email());
+				cur.put("checkin_id", notification.getCheckinID());
+				cur.put("owner_user_email", notification.getOwner_user_email()) ;
+				JSCheckins.add(cur);
+			}
+			json.put("array", JSCheckins);
+			return json.toJSONString();
+		}else{
+			json.put("success", 0);
+		}
+		return json.toJSONString();
+	}
+	
+	@POST
+	@Path("/addNotification")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String addNotification(@FormParam("type") String email, @FormParam("user_email") String user_email
+			, @FormParam("checkin_id") int checkinID, @FormParam("user_email") String owner_user_email) {
+		boolean operation = NotificationModel.addNotification(email, user_email, checkinID, owner_user_email);
+		JSONObject json = new JSONObject();
+		if (operation == true) {
+			json.put("success", 1);
+		}else{
+			json.put("success", 0);
+		}
+		return json.toJSONString();
+	}
+	
+	@POST
+	@Path("/addMessage")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String addMessage(@FormParam("text") String text, @FormParam("user_email") String user_email
+			, @FormParam("sender_user_email") String sender_user_email) {
+		boolean operation = MessageModel.addMessage(text, user_email, sender_user_email);
+		JSONObject json = new JSONObject();
+		if (operation == true) {
+			json.put("success", 1);
+		}else{
+			json.put("success", 0);
+		}
+		return json.toJSONString();
+	}
+	
+	@POST
+	@Path("/getAllMessages")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String getAllMessages(@FormParam("email") String email) {
+		ArrayList<MessageModel> messages = MessageModel.getMyMessages(email);
+		JSONObject json = new JSONObject();
+		if (messages != null) {
+			json.put("success", 1);
+			
+			JSONArray JSCheckins = new JSONArray();
+			
+			for(MessageModel message : messages){
+				JSONObject cur = new JSONObject();		
+				cur.put("message_id", message.getMessageID());
+				cur.put("text", message.getText());
+				cur.put("user_email", message.getUser_email());
+				cur.put("sender_user_email", message.getSender_user_email());
+				cur.put("date", message.getDate()) ;
 				JSCheckins.add(cur);
 			}
 			json.put("array", JSCheckins);

@@ -27,6 +27,19 @@ public class CommentModel {
 			stmt.setString(3, formattedDate);
 			stmt.setInt(4, checkinID);
 			stmt.executeUpdate();
+			
+			sql = "SELECT `checkin_user_email` FROM `checkin` WHERE `checkin_id` = ?" ;
+			stmt = conn.prepareStatement(sql,
+					ResultSet.TYPE_SCROLL_INSENSITIVE,
+		            ResultSet.CONCUR_READ_ONLY);
+			stmt.setInt(1, checkinID);
+			ResultSet rs = stmt.executeQuery() ;
+			String owner_user_email = null ; 
+			while(rs.next())
+			{
+				owner_user_email = rs.getString("checkin_user_email") ;
+			}
+			NotificationModel.addNotification("Comment", email, checkinID, owner_user_email) ;
 			return true ;
 		}catch(SQLException e){
 			e.printStackTrace();
