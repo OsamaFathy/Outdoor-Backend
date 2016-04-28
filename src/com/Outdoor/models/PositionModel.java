@@ -51,13 +51,87 @@ public class PositionModel {
 		}
 		return null;
 	}
+	public static PositionModel getPlace(String placeName) {
+		try{
+			Connection conn = DBConnection.getActiveConnection();
+			String sql = "SELECT * FROM `place` WHERE `placeName` = ?";
+			
+			PreparedStatement stmt;
+			stmt = conn.prepareStatement(sql);
+			stmt.setString(1, placeName);
+			System.out.println(sql);
+			
+			ResultSet rs = stmt.executeQuery();
+			if (rs.next()) {
+				PositionModel pos = new PositionModel();
+				pos.name = rs.getString("placeName");
+				pos.rate = rs.getDouble("rate");
+				pos.numberOfUsers = rs.getInt("numberOfUsers");
+				pos.placeUserEmail = rs.getString("place_user_email");
+				return pos;
+			}
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	public static boolean ratePlace(String email, String placeName, double rate) {
+		try{
+			Connection conn = DBConnection.getActiveConnection();
+			String sql = "INSERT INTO `user_rated_place` (`user_email`, `place_name`, `rating`) VALUES (?, ?, ?)";
+			
+			PreparedStatement stmt;
+			stmt = conn.prepareStatement(sql);
+			stmt.setString(1, email);
+			stmt.setString(2, placeName);
+			stmt.setDouble(3, rate);
+			stmt.executeUpdate();
+			
+			
+			PositionModel place = getPlace(placeName);
+			double newRate = (place.rate*place.numberOfUsers + rate)/(place.numberOfUsers+1);
+			int newVoters = (place.numberOfUsers+1);
+			sql = "UPDATE  `place` SET  `rate` =  ?, `numberOfUsers` =  ? WHERE  `placeName` = ?";
+			stmt = conn.prepareStatement(sql);
+			stmt.setDouble(1, newRate);
+			stmt.setInt(2, newVoters);
+			stmt.setString(3, place.name);
+			stmt.executeUpdate();
+			return true;
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
+	public static Double getMyRating(String email, String placeName) {
+		try{
+			Connection conn = DBConnection.getActiveConnection();
+			String sql = "SELECT `rating` FROM `user_rated_place` WHERE `user_email` = ? AND `place_name` = ?";
+			
+			PreparedStatement stmt;
+			stmt = conn.prepareStatement(sql);
+			stmt.setString(1, email);
+			stmt.setString(2, placeName);
+			System.out.println(sql);
+			
+			ResultSet rs = stmt.executeQuery();
+			if (rs.next()) {
+				return rs.getDouble("rating");
+			}
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+		return -1.0;
+	}
 	
 	public static boolean placeFound(String placeName) {
 		try{
 			Connection conn = DBConnection.getActiveConnection();
 			String sql = "SELECT * FROM place WHERE placeName = ?";
 					
-			
+				
 			PreparedStatement stmt;
 			System.out.println(sql);
 			stmt = conn.prepareStatement(sql);
@@ -73,7 +147,7 @@ public class PositionModel {
 			e.printStackTrace();
 		}
 		return false;
-	}
+	}	
 	
 	public static boolean addPlace(String placeName, double rate, int numberOfUsers, String email, double lon, double lat) {
 		try{

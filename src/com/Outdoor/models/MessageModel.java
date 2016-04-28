@@ -41,16 +41,17 @@ public class MessageModel {
 		try{
 			ArrayList<MessageModel> messages = new ArrayList<>();
 			Connection conn = DBConnection.getActiveConnection();
-			String sql = "SELECT * FROM user_has_message WHERE `user_email` = ?" ;
+			String sql = "SELECT * FROM `user_has_message` WHERE `user_email` = ?" ;
 
 			PreparedStatement stmt = conn.prepareStatement(sql);
+			
 			stmt.setString(1, email);
 			
 			ResultSet rs = stmt.executeQuery();
 			
 			while(rs.next()){
 				MessageModel message = new MessageModel();
-				message.setMessageID(rs.getInt("message_id"));
+				message.setMessageID(rs.getInt("user_has_message_id"));
 				message.setUser_email(rs.getString("user_email"));
 				message.setSender_user_email(rs.getString("sender_user_email"));
 				message.setDate(rs.getDate("date"));

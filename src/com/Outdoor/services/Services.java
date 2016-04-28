@@ -230,6 +230,44 @@ public class Services {
 		return json.toJSONString();
 	}
 	
+
+	@POST
+	@Path("/getPlace")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String getPlace(@FormParam("email") String email, @FormParam("placeName") String name) {
+		PositionModel pos = PositionModel.getPlace(name);
+		double rate = PositionModel.getMyRating(email, name);
+		JSONObject json = new JSONObject();
+		if(pos != null){
+			json.put("success", 1);
+			json.put("name", pos.getName());
+			json.put("rate", pos.getRate());
+			json.put("numberOfUsers", pos.getNumberOfUsers());
+			json.put("placeUserEmail", pos.getPlaceUserEmail());
+			json.put("lat", pos.getLat());
+			json.put("long", pos.getLon());
+			json.put("myRate", rate);	
+		}else{
+			json.put("success", 0);
+		}
+		return json.toJSONString();
+		
+	}
+
+	@POST
+	@Path("/ratePlace")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String ratePlace(@FormParam("email") String email, @FormParam("placeName") String name, @FormParam("rate") Double rate) {
+		boolean done = PositionModel.ratePlace(email, name, rate);
+		JSONObject json = new JSONObject();
+		if(done){
+			json.put("success", 1);
+		}else{
+			json.put("success", 0);
+		}
+		return json.toJSONString();
+	}
+
 	@POST
 	@Path("/like")
 	@Produces(MediaType.TEXT_PLAIN)
@@ -466,11 +504,16 @@ public class Services {
 			JSONArray JSCheckins = new JSONArray();
 			
 			for(MessageModel message : messages){
-				JSONObject cur = new JSONObject();		
+				String sender = UserModel.getUserName(message.getSender_user_email());
+				
+				
+				JSONObject cur = new JSONObject();
+				
 				cur.put("message_id", message.getMessageID());
 				cur.put("text", message.getText());
 				cur.put("user_email", message.getUser_email());
 				cur.put("sender_user_email", message.getSender_user_email());
+				cur.put("sender_user_name", sender);
 				cur.put("date", message.getDate()) ;
 				JSCheckins.add(cur);
 			}
