@@ -350,7 +350,7 @@ public class Services {
 	@Path("/commentToPlace")
 	@Produces(MediaType.TEXT_PLAIN)
 	public String commentToPlace(@FormParam("text") String text, @FormParam("email") String email, 
-			@FormParam("checkin_id") String placeName) {
+			@FormParam("placeName") String placeName) {
 		boolean operation = CommentModel.addCommentToPlace(text, email, placeName) ;
 		JSONObject json = new JSONObject();
 		if (operation == true) {
