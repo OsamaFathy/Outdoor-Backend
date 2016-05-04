@@ -194,6 +194,7 @@ public class Services {
 				cur.put("checkin_place_name", checkin.getCheckinPlaceName());
 				cur.put("likes", checkin.getLikes());
 				cur.put("if_liked", checkin.getLikedByMe());
+				cur.put("comments", checkin.getComments(checkin.getCheckinID()));
 			
 				JSCheckins.add(cur);
 			}
@@ -424,6 +425,7 @@ public class Services {
 				cur.put("checkin_place_name", checkin.getCheckinPlaceName());
 				cur.put("likes", checkin.getLikes());
 				cur.put("if_liked", checkin.getLikedByMe());
+				cur.put("comments", checkin.getComments(checkin.getCheckinID()));
 			
 				JSCheckins.add(cur);
 			}
