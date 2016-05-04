@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import com.mysql.jdbc.Statement;
 
@@ -185,6 +186,31 @@ public class PositionModel {
 			e.printStackTrace();
 		}
 		return false;
+	}
+	
+	public static ArrayList<CommentModel> getComments(String placeName){
+		try{
+			ArrayList<CommentModel> comments = new ArrayList<>();
+			Connection conn = DBConnection.getActiveConnection();
+			String sql = "SELECT * FROM comment WHERE `placeName` = ?" ;
+			PreparedStatement stmt = conn.prepareStatement(sql,
+					ResultSet.TYPE_SCROLL_INSENSITIVE,
+		            ResultSet.CONCUR_READ_ONLY);
+			stmt.setString(1, placeName);
+			ResultSet rs = stmt.executeQuery();
+			while(rs.next()){
+				CommentModel comment = new CommentModel();
+				comment.setText(rs.getString("text"));
+				comment.setEmail(rs.getString("comment_user_email"));
+				comment.setUsername(UserModel.getUserName(comment.getEmail()));
+				comment.setDate(rs.getDate("date"));
+				comments.add(comment);
+			}
+			return comments;
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+		return null ;
 	}
 	
 	public double getLat() {

@@ -11,6 +11,7 @@ public class CommentModel {
 	private String text ;
 	private String email ;
 	private Date date;
+	private String username ;
 	public static boolean addCommentToCheckin(String text, String email, int checkinID){
 		try{
 			Connection conn = DBConnection.getActiveConnection();
@@ -115,5 +116,13 @@ public class CommentModel {
 
 	public void setText(String text) {
 		this.text = text;
+	}
+
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
 	}
 }

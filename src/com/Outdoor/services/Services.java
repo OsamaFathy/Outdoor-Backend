@@ -418,6 +418,7 @@ public class Services {
 				JSONObject cur = new JSONObject();		
 				cur.put("checkin_id", checkin.getCheckinID());
 				cur.put("checkin_user_email", checkin.getCheckinUserEmail());
+				cur.put("checkin_user_name", checkin.getCheckinUsername()) ;
 				cur.put("date", checkin.getDate());
 				cur.put("status", checkin.getStatus());
 				cur.put("checkin_place_name", checkin.getCheckinPlaceName());
@@ -518,6 +519,34 @@ public class Services {
 				JSCheckins.add(cur);
 			}
 			json.put("array", JSCheckins);
+			return json.toJSONString();
+		}else{
+			json.put("success", 0);
+		}
+		return json.toJSONString();
+	}
+	
+	@POST
+	@Path("/getPlaceComments")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String getPlaceComments(@FormParam("placeName") String placeName) {
+		ArrayList<CommentModel> comments = PositionModel.getComments(placeName);
+		JSONObject json = new JSONObject();
+		JSONArray JSUsers = new JSONArray();
+		if (comments != null) {
+			json.put("success", 1);
+
+			for(CommentModel comment : comments){
+				JSONObject cur = new JSONObject();
+				cur.put("text", comment.getText());
+				cur.put("user_email", comment.getEmail());
+				cur.put("user_name", comment.getUsername()) ;
+				cur.put("date", comment.getDate());
+				JSUsers.add(cur);
+			}
+			json.put("array", JSUsers);
+		
+			
 			return json.toJSONString();
 		}else{
 			json.put("success", 0);

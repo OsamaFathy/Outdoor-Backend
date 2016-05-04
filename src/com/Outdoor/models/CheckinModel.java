@@ -14,6 +14,7 @@ public class CheckinModel {
 	String date;
 	String status;
 	String checkinPlaceName;
+	String checkinUsername ;
 	int likes;
 	int likedByMe;
 	
@@ -89,7 +90,7 @@ public class CheckinModel {
 				curCheckin.date = rs.getString("date");
 				curCheckin.status = rs.getString("status");
 				curCheckin.checkinPlaceName = rs.getString("checkin_place_name");
-				
+				curCheckin.checkinUsername = UserModel.getUserName(curCheckin.checkinUserEmail) ;
 				
 				sql = "SELECT * FROM `user_likes_checkin` WHERE `checkin_checkin_id` = ?" ;
 				PreparedStatement stmt2 = conn.prepareStatement(sql,
@@ -248,6 +249,13 @@ public class CheckinModel {
 	}
 	public void setCheckinPlaceName(String checkin_place_name) {
 		this.checkinPlaceName = checkin_place_name;
+	}
+	
+	public String getCheckinUsername() {
+		return checkinUsername;
+	}
+	public void setCheckinUsername(String checkin_user_name) {
+		this.checkinUsername = checkin_user_name;
 	}
 
 	public int getLikes() {
