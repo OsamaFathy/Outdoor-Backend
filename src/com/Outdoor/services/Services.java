@@ -194,7 +194,17 @@ public class Services {
 				cur.put("checkin_place_name", checkin.getCheckinPlaceName());
 				cur.put("likes", checkin.getLikes());
 				cur.put("if_liked", checkin.getLikedByMe());
-				cur.put("comments", checkin.getComments(checkin.getCheckinID()));
+				JSONArray JSComments = new JSONArray() ;
+				ArrayList<CommentModel> comments = checkin.getComments(checkin.getCheckinID()) ;
+				for(CommentModel comment:comments)
+				{
+					JSONObject cur2 = new JSONObject() ;
+					cur2.put("text", comment.getText()) ;
+					cur2.put("date", comment.getDate()) ;
+					cur2.put("username", UserModel.getUserName(comment.getEmail())) ;
+					JSComments.add(cur2) ;
+				}
+				cur.put("comments", JSComments);
 			
 				JSCheckins.add(cur);
 			}
@@ -425,7 +435,17 @@ public class Services {
 				cur.put("checkin_place_name", checkin.getCheckinPlaceName());
 				cur.put("likes", checkin.getLikes());
 				cur.put("if_liked", checkin.getLikedByMe());
-				cur.put("comments", checkin.getComments(checkin.getCheckinID()));
+				JSONArray JSComments = new JSONArray() ;
+				ArrayList<CommentModel> comments = checkin.getComments(checkin.getCheckinID()) ;
+				for(CommentModel comment:comments)
+				{
+					JSONObject cur2 = new JSONObject() ;
+					cur2.put("text", comment.getText()) ;
+					cur2.put("date", comment.getDate()) ;
+					cur2.put("username", UserModel.getUserName(comment.getEmail())) ;
+					JSComments.add(cur2) ;
+				}
+				cur.put("comments", JSComments);
 			
 				JSCheckins.add(cur);
 			}
