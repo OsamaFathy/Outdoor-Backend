@@ -178,7 +178,7 @@ public class Services {
 	@Path("/getProfile")
 	@Produces(MediaType.TEXT_PLAIN)
 	public String getProfile(@FormParam("my_email") String myEmail,@FormParam("his_email") String hisEmail) {
-		ArrayList<CheckinModel> checkins = CheckinModel.getMyCheckins(hisEmail);
+		ArrayList<CheckinModel> checkins = CheckinModel.getMyCheckins(hisEmail, myEmail);
 		JSONObject json = new JSONObject();
 		if (checkins != null) {
 			json.put("success", 1);

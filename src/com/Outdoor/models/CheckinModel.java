@@ -19,7 +19,7 @@ public class CheckinModel {
 	int likedByMe;
 	
 
-	public static ArrayList<CheckinModel> getMyCheckins(String email){
+	public static ArrayList<CheckinModel> getMyCheckins(String email, String email2){
 		try{
 			ArrayList<CheckinModel> checkins = new ArrayList<>();
 			Connection conn = DBConnection.getActiveConnection();
@@ -58,7 +58,7 @@ public class CheckinModel {
 				PreparedStatement stmt3 = conn.prepareStatement(sql,
 			            ResultSet.TYPE_SCROLL_INSENSITIVE,
 			            ResultSet.CONCUR_READ_ONLY);
-				stmt3.setString(1, curCheckin.checkinUserEmail);
+				stmt3.setString(1, email2);
 				stmt3.setInt(2, curCheckin.checkinID);
 				ResultSet rs3 = stmt3.executeQuery();
 				curCheckin.likedByMe = (rs3.next()?1:0);
@@ -210,6 +210,7 @@ public class CheckinModel {
 				CommentModel comment = new CommentModel();
 				comment.setText(rs.getString("text"));
 				comment.setEmail(rs.getString("comment_user_email"));
+				comment.setUsername(UserModel.getUserName(comment.getEmail()));
 				comment.setDate(rs.getDate("date"));
 				comments.add(comment);
 			}
