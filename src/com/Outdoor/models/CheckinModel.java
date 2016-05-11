@@ -165,7 +165,7 @@ public class CheckinModel {
 			{
 				owner_user_email = rs.getString("checkin_user_email") ;
 			}
-			NotificationModel.addNotification("Comment", email, checkin_ID, owner_user_email) ;
+			NotificationModel.addNotification("Like", email, checkin_ID, owner_user_email) ;
 			return false ;
 		}catch(SQLException e){
 			e.printStackTrace();
