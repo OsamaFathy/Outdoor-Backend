@@ -194,6 +194,8 @@ public class Services {
 				cur.put("checkin_place_name", checkin.getCheckinPlaceName());
 				cur.put("likes", checkin.getLikes());
 				cur.put("if_liked", checkin.getLikedByMe());
+				ArrayList<CommentModel> comments = checkin.getComments(checkin.getCheckinID()) ;
+				cur.put("numOfComments", comments.size()) ;
 				/*JSONArray JSComments = new JSONArray() ;
 				ArrayList<CommentModel> comments = checkin.getComments(checkin.getCheckinID()) ;
 				for(CommentModel comment:comments)
@@ -435,6 +437,8 @@ public class Services {
 				cur.put("checkin_place_name", checkin.getCheckinPlaceName());
 				cur.put("likes", checkin.getLikes());
 				cur.put("if_liked", checkin.getLikedByMe());
+				ArrayList<CommentModel> comments = checkin.getComments(checkin.getCheckinID()) ;
+				cur.put("numOfComments", comments.size()) ;
 				/*JSONArray JSComments = new JSONArray() ;
 				ArrayList<CommentModel> comments = checkin.getComments(checkin.getCheckinID()) ;
 				for(CommentModel comment:comments)
