@@ -402,7 +402,7 @@ public class Services {
 			for(CommentModel comment : comments){
 				JSONObject cur = new JSONObject();
 				cur.put("text", comment.getText());
-				cur.put("user_email", comment.getEmail());
+				cur.put("username", UserModel.getUserName(comment.getEmail()));
 				cur.put("date", comment.getDate());
 				JSUsers.add(cur);
 			}
@@ -476,9 +476,8 @@ public class Services {
 				JSONObject cur = new JSONObject();		
 				cur.put("notification_id", notification.getNotificationID());
 				cur.put("type", notification.getType());
-				cur.put("user_email", notification.getUser_email());
-				cur.put("checkin_id", notification.getCheckinID());
-				cur.put("owner_user_email", notification.getOwner_user_email()) ;
+				cur.put("username", UserModel.getUserName(notification.getUser_email()));
+				cur.put("status", notification.getStatus());
 				JSCheckins.add(cur);
 			}
 			json.put("array", JSCheckins);

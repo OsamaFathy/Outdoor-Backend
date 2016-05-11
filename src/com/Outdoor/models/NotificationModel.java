@@ -9,7 +9,7 @@ import java.util.Date;
 
 public class NotificationModel {
 	private int notificationID ;
-	private String type, user_email, owner_user_email ;
+	private String type, user_email, owner_user_email, status;
 	private int checkinID ;
 	
 	public static boolean addNotification(String type, String user_email, int checkinID, String owner_user_email){
@@ -36,7 +36,7 @@ public class NotificationModel {
 		try{
 			ArrayList<NotificationModel> notifications = new ArrayList<>();
 			Connection conn = DBConnection.getActiveConnection();
-			String sql = "SELECT * FROM notification WHERE `owner_user_email` = ?" ;
+			String sql = "SELECT * FROM notification WHERE `owner_user_email` = ? ORDER BY `notification_id` DESC" ;
 
 			PreparedStatement stmt = conn.prepareStatement(sql);
 			stmt.setString(1, email);
@@ -49,6 +49,8 @@ public class NotificationModel {
 				notification.setType(rs.getString("type"));
 				notification.setUser_email(rs.getString("user_email"));
 				notification.setCheckinID(rs.getInt("checkin_id")) ;
+				String text = CheckinModel.getCheckin(notification.getCheckinID()).getStatus();
+				notification.setStatus(text.substring(0, Math.min(30, text.length())));
 				notification.setOwner_user_email(rs.getString("owner_user_email"));
 				notifications.add(notification);
 			}
@@ -97,6 +99,14 @@ public class NotificationModel {
 
 	public void setCheckinID(int checkinID) {
 		this.checkinID = checkinID;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
 	}
 
 

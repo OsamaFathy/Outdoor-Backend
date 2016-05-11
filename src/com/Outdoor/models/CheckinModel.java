@@ -221,6 +221,30 @@ public class CheckinModel {
 		return null ;
 	}
 	
+	public static CheckinModel getCheckin(int checkinID){
+		CheckinModel checkin = null;
+		try {
+			Connection conn = DBConnection.getActiveConnection();
+			String sql = "SELECT * FROM checkin WHERE `checkin_id` = ?" ;
+
+			PreparedStatement stmt = conn.prepareStatement(sql);
+			stmt.setInt(1, checkinID);
+			ResultSet rs = stmt.executeQuery();
+			if(rs.next()){
+				checkin = new CheckinModel();
+				checkin.checkinID = rs.getInt("checkin_id");
+				checkin.checkinUserEmail = rs.getString("checkin_user_email");
+				checkin.date = rs.getString("date");
+				checkin.status = rs.getString("status");
+				checkin.checkinPlaceName = rs.getString("checkin_place_name");
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return checkin;
+	}
 	public int getCheckinID() {
 		return checkinID;
 	}

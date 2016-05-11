@@ -192,7 +192,7 @@ public class PositionModel {
 		try{
 			ArrayList<CommentModel> comments = new ArrayList<>();
 			Connection conn = DBConnection.getActiveConnection();
-			String sql = "SELECT * FROM comment WHERE `placeName` = ?" ;
+			String sql = "SELECT * FROM comment WHERE `placeName` = ? ORDER BY date DESC" ;
 			PreparedStatement stmt = conn.prepareStatement(sql,
 					ResultSet.TYPE_SCROLL_INSENSITIVE,
 		            ResultSet.CONCUR_READ_ONLY);
