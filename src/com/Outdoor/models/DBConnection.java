@@ -17,7 +17,7 @@ public class DBConnection {
 			.getConnection("jdbc:mysql://127.8.201.2:3306/outdoorbackend?"
 							+ "user=admin723PR7V&password=j6KV4yLVXAqK&characterEncoding=utf8");
 //			connection = DriverManager
-	//				.getConnection("jdbc:mysql://localhost:8080/outdoordb?"
+	//				.getConnection("jdbc:mysql://localhost:3306/outdoordb?"
 		//			+ "user=root&password=1234&characterEncoding=utf8");
 			return connection;
 		} catch (ClassNotFoundException e) {

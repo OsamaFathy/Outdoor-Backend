@@ -120,7 +120,8 @@ public class PositionModel {
 			ResultSet rs = stmt.executeQuery();
 			if (rs.next()) {
 				return rs.getDouble("rating");
-			}
+			}else
+				return -1.0 ;
 		}catch(SQLException e){
 			e.printStackTrace();
 		}
