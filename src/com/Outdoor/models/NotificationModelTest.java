@@ -20,14 +20,14 @@ public class NotificationModelTest {
 		  return new Object[][] {{"test94@gmail.com"}} ;
 		  }
 	
-	//@Test(enabled = false)
-	  @Test(dataProvider = "test1")
+	@Test(enabled = false)
+	  //@Test(dataProvider = "test1")
   public void addNotification(String type, String user_email, int checkinID, String owner_user_email) {
 	  Assert.assertEquals(true, notificationModel.addNotification(type, user_email, checkinID, owner_user_email));
   }
 
-//@Test(enabled = false)
-  @Test(dataProvider = "test2")
+@Test(enabled = false)
+  //@Test(dataProvider = "test2")
   public void getMyNotifications(String email) {
 	  ArrayList<NotificationModel> notifications = new ArrayList<>() ;
 	  NotificationModel notification = new NotificationModel() ;

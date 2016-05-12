@@ -34,14 +34,14 @@ public class UserModelTest {
 		  return new Object[][] {{"test@gmail.com", "51.23", "94.94"}} ;
 	  }
 	
-	//@Test(enabled = false)
-	  @Test(dataProvider = "test1")
+	@Test(enabled = false)
+	//  @Test(dataProvider = "test1")
   public void Followed(String user_email, String sender_user_email) {
 		  Assert.assertEquals(true, userModel.Followed(user_email, sender_user_email));
   }
 
-	//@Test(enabled = false)
-	  @Test(dataProvider = "test2")
+	@Test(enabled = false)
+	//  @Test(dataProvider = "test2")
   public void addNewUser(String name, String email, String pass, String question, String ans, String alternative) {
     UserModel user = new UserModel() ;
     user.setEmail(email);
@@ -61,8 +61,8 @@ public class UserModelTest {
 		  Assert.assertEquals(true, userModel.followFriend(email, friendEmail));
   }
 
-	//@Test(enabled = false)
-	  @Test(dataProvider = "test3")
+	@Test(enabled = false)
+	//  @Test(dataProvider = "test3")
   public void login(String email, String pass) {
     UserModel user = new UserModel() ;
     user.setEmail(email);
@@ -70,8 +70,8 @@ public class UserModelTest {
     Assert.assertEquals(true, userModel.login(email, pass));
   }
 
-	//@Test(enabled = false)
-	  @Test(dataProvider = "test4")
+	@Test(enabled = false)
+	//  @Test(dataProvider = "test4")
   public void savePlace(String placeName, String email) {
 		  Assert.assertEquals(true, userModel.savePlace(placeName, email));
   }
@@ -82,8 +82,8 @@ public class UserModelTest {
 	  Assert.assertEquals(true, userModel.unfollowFriend(user_email, sender_user_email));
   }
 
-	//@Test(enabled = false)
-	  @Test(dataProvider = "test5")
+	@Test(enabled = false)
+	//  @Test(dataProvider = "test5")
   public void updateUserPosition(String email, Double lat, Double lon) {
 	  Assert.assertEquals(true, userModel.updateUserPosition(email, lat, lon));
   }
