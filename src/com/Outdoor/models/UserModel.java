@@ -1,9 +1,10 @@
-package com.Outdoor.models;
+	package com.Outdoor.models;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import com.Outdoor.models.DBConnection;
 import com.Outdoor.models.UserModel;
@@ -69,11 +70,9 @@ public class UserModel {
 			Connection conn = DBConnection.getActiveConnection();
 			String sql = "INSERT INTO user(`user_email`, `username`, `password`, `security_question`"
 					+ ", `security_answer`, `alternative_email`) VALUES(?,?,?,?,?,?)";
-			// System.out.println(sql);
 
 			PreparedStatement stmt;
 			stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-			System.out.println(stmt.toString());
 			stmt.setString(1, email);
 			stmt.setString(2, name);
 			stmt.setString(3, pass);
@@ -100,7 +99,6 @@ public class UserModel {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		System.out.println("OOOOOOOOOOOOOOOOOOOOOOOOOO");
 		return null;
 	}
 
@@ -116,7 +114,6 @@ public class UserModel {
 			stmt.setString(1, email);
 			stmt.setString(2, pass);
 			
-			System.out.println(stmt.toString());
 			ResultSet rs = stmt.executeQuery();
 			
 			if (rs.next()) {
@@ -139,6 +136,46 @@ public class UserModel {
 		return null;
 	}
 
+	public static String getUserName(String email) {
+		try {
+			Connection conn = DBConnection.getActiveConnection();
+			String sql = "SELECT * FROM user WHERE `user_email` = ?";
+			PreparedStatement stmt;
+			stmt = conn.prepareStatement(sql);
+			stmt.setString(1, email);
+
+			ResultSet rs = stmt.executeQuery();
+			
+			if (rs.next()) {
+				return rs.getString("username");
+			}
+			return null;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public static boolean Followed(String myEmail, String hisEmail) {
+		try {
+			Connection conn = DBConnection.getActiveConnection();
+			String sql = "SELECT * FROM `user_has_friend` WHERE `user_email` = ? AND `friend_user_email` = ?";
+			PreparedStatement stmt;
+			stmt = conn.prepareStatement(sql);
+			stmt.setString(1, myEmail);
+			stmt.setString(2, hisEmail);
+
+			ResultSet rs = stmt.executeQuery();
+			
+			return rs.next();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return false;
+	}
+		
 	public static boolean updateUserPosition(String email, Double lat, Double lon) {
 		try{
 			Connection conn = DBConnection.getActiveConnection();
@@ -155,7 +192,106 @@ public class UserModel {
 		}
 		return false;
 	}
+	
+	public static boolean followFriend(String email, String friendEmail) {
+		try{
+			Connection conn = DBConnection.getActiveConnection();
+			String sql = "INSERT INTO user_has_friend (`user_email`, `friend_user_email`) VALUES (?, ?)";
+			PreparedStatement stmt;
+			stmt = conn.prepareStatement(sql);
+			stmt.setString(1, email);
+			stmt.setString(2, friendEmail);
+			stmt.executeUpdate();
+			return true;
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
+	public static boolean unfollowFriend(String email, String friendEmail) {
+		try{
+			Connection conn = DBConnection.getActiveConnection();
+			String sql = "DELETE FROM user_has_friend WHERE `user_email` = ? AND `friend_user_email` = ?" ;
+			PreparedStatement stmt;
+			stmt = conn.prepareStatement(sql);
+			stmt.setString(1, email);
+			stmt.setString(2, friendEmail);
+			stmt.executeUpdate();
+			return true;
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+		return false;
+	}
 
+	public static PositionModel getLastPosition(String email) {
+		try{
+			PositionModel pos = new PositionModel();
+			Connection conn = DBConnection.getActiveConnection();
+			String sql = "SELECT `lat`, `long` FROM user WHERE `user_email` = ?";
+			PreparedStatement stmt;
+			System.out.println(sql);
+			stmt = conn.prepareStatement(sql);
+			stmt.setString(1, email);
+			
+			ResultSet rs = stmt.executeQuery();
+			if (rs.next()) {
+				pos.setLat(rs.getDouble("lat"));
+				pos.setLon(rs.getDouble("long"));
+				return pos;
+			}
+			return null;
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public static ArrayList<UserModel> getFollowers(String email){
+		try{
+			ArrayList<UserModel> followers = new ArrayList<>();
+			Connection conn = DBConnection.getActiveConnection();
+			String sql = "SELECT * FROM `user` WHERE `user_email` IN "
+					+ "(SELECT `user_email` FROM `user_has_friend`"
+					+ "WHERE `friend_user_email`=?)";
+			PreparedStatement stmt = conn.prepareStatement(sql);
+			stmt.setString(1, email);
+			ResultSet rs = stmt.executeQuery();
+			while(rs.next()){
+				UserModel user = new UserModel();
+				user.email = rs.getString("user_email");
+				user.pass = rs.getString("password");
+				user.name = rs.getString("username");
+				user.question = rs.getString("security_question");
+				user.answer = rs.getString("security_answer");
+				user.alternative = rs.getString("alternative_email");
+				user.lat = rs.getDouble("lat");
+				user.lon = rs.getDouble("long");
+				followers.add(user);
+			}
+			return followers;
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public static boolean savePlace(String placeName, String email){
+		try{
+			Connection conn = DBConnection.getActiveConnection();
+			String sql = "INSERT INTO user_saves_place (`placeName`, `user_email`) VALUES (?, ?)";
+			PreparedStatement stmt = conn.prepareStatement(sql);
+			stmt.setString(1, placeName);
+			stmt.setString(2, email);
+			stmt.executeUpdate();
+			return true;
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
 	public String getQuestion() {
 		return question;
 	}
