@@ -9,8 +9,12 @@
 		</attributes>
 	</classpathentry>
 <<<<<<< HEAD
+<<<<<<< HEAD
 	<classpathentry kind="con" path="org.testng.TESTNG_CONTAINER"/>
 =======
 >>>>>>> 8a795f078c99c0fc8d4f9d0b9d8879f343f8b6ec
+=======
+	<classpathentry kind="con" path="org.testng.TESTNG_CONTAINER"/>
+>>>>>>> 5aee6e455a4ac751c6aa0abfd7c84e18b5cce01d
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>
