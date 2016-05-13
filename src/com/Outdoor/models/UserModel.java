@@ -21,8 +21,8 @@ public class UserModel {
 	private String answer;
 	private String alternative;
 	
-	private Double lat;
-	private Double lon;
+	private Double latitude;
+	private Double longitude;
 	
 	public String getPass(){
 		return pass;
@@ -49,19 +49,19 @@ public class UserModel {
 	}
 
 	public Double getLat() {
-		return lat;
+		return latitude;
 	}
 
 	public void setLat(Double lat) {
-		this.lat = lat;
+		this.latitude = lat;
 	}
 
 	public Double getLon() {
-		return lon;
+		return longitude;
 	}
 
 	public void setLon(Double lon) {
-		this.lon = lon;
+		this.longitude = lon;
 	}
 	
 	/**
@@ -70,30 +70,30 @@ public class UserModel {
 	 * @param email his email
 	 * @param pass his password
 	 * @param question his security question
-	 * @param ans his secrity answer
+	 * @param ans his security answer
 	 * @param alternative his alternative email
 	 * @return the newly created user or null of case of error
 	 */
 	public static UserModel addNewUser(String name, String email, String pass, String question, String ans,
 			String alternative) {
 		try {
-			Connection conn = DBConnection.getActiveConnection();
+			Connection connection = DBConnection.getActiveConnection();
 			String sql = "INSERT INTO user(`user_email`, `username`, `password`, `security_question`"
 					+ ", `security_answer`, `alternative_email`) VALUES(?,?,?,?,?,?)";
 
-			PreparedStatement stmt;
-			stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-			stmt.setString(1, email);
-			stmt.setString(2, name);
-			stmt.setString(3, pass);
-			stmt.setString(4, question);
-			stmt.setString(5, ans);
-			stmt.setString(6, alternative);
-			stmt.executeUpdate();
+			PreparedStatement statement;
+			statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+			statement.setString(1, email);
+			statement.setString(2, name);
+			statement.setString(3, pass);
+			statement.setString(4, question);
+			statement.setString(5, ans);
+			statement.setString(6, alternative);
+			statement.executeUpdate();
 
-			int cnt = stmt.getUpdateCount();
+			int count = statement.getUpdateCount();
 			
-			if(cnt == 1){
+			if(count == 1){
 				UserModel user = new UserModel();
 				user.email = email;
 				user.pass = pass;
@@ -101,8 +101,8 @@ public class UserModel {
 				user.question = question;
 				user.answer = ans;
 				user.alternative = alternative;
-				user.lat = 0.0;
-				user.lon = 0.0;
+				user.latitude = 0.0;
+				user.longitude = 0.0;
 				return user;
 			}
 		} catch (SQLException e) {
@@ -120,26 +120,26 @@ public class UserModel {
 	 */
 	public static UserModel login(String email, String pass) {
 		try {
-			Connection conn = DBConnection.getActiveConnection();
+			Connection connection = DBConnection.getActiveConnection();
 			//String sql = "SELECT * FROM user WHERE `email` = ? and `password` = ?";
 			String sql = "SELECT * FROM user WHERE `user_email` = ? and `password` = ?";
-			PreparedStatement stmt;
-			stmt = conn.prepareStatement(sql);
-			stmt.setString(1, email);
-			stmt.setString(2, pass);
+			PreparedStatement statement;
+			statement = connection.prepareStatement(sql);
+			statement.setString(1, email);
+			statement.setString(2, pass);
 			
-			ResultSet rs = stmt.executeQuery();
+			ResultSet result = statement.executeQuery();
 			
-			if (rs.next()) {
+			if (result.next()) {
 				UserModel user = new UserModel();
-				user.email = rs.getString("user_email");
-				user.pass = rs.getString("password");
-				user.name = rs.getString("username");
-				user.question = rs.getString("security_question");
-				user.answer = rs.getString("security_answer");
-				user.alternative = rs.getString("alternative_email");
-				user.lat = rs.getDouble("lat");
-				user.lon = rs.getDouble("long");
+				user.email = result.getString("user_email");
+				user.pass = result.getString("password");
+				user.name = result.getString("username");
+				user.question = result.getString("security_question");
+				user.answer = result.getString("security_answer");
+				user.alternative = result.getString("alternative_email");
+				user.latitude = result.getDouble("lat");
+				user.longitude = result.getDouble("long");
 				return user;
 			}
 			return null;
@@ -157,16 +157,16 @@ public class UserModel {
 	 */
 	public static String getUserName(String email) {
 		try {
-			Connection conn = DBConnection.getActiveConnection();
+			Connection connection = DBConnection.getActiveConnection();
 			String sql = "SELECT * FROM user WHERE `user_email` = ?";
-			PreparedStatement stmt;
-			stmt = conn.prepareStatement(sql);
-			stmt.setString(1, email);
+			PreparedStatement statement;
+			statement = connection.prepareStatement(sql);
+			statement.setString(1, email);
 
-			ResultSet rs = stmt.executeQuery();
+			ResultSet result = statement.executeQuery();
 			
-			if (rs.next()) {
-				return rs.getString("username");
+			if (result.next()) {
+				return result.getString("username");
 			}
 			return null;
 		} catch (SQLException e) {
@@ -184,16 +184,16 @@ public class UserModel {
 	 */
 	public static boolean Followed(String myEmail, String hisEmail) {
 		try {
-			Connection conn = DBConnection.getActiveConnection();
+			Connection connection = DBConnection.getActiveConnection();
 			String sql = "SELECT * FROM `user_has_friend` WHERE `user_email` = ? AND `friend_user_email` = ?";
-			PreparedStatement stmt;
-			stmt = conn.prepareStatement(sql);
-			stmt.setString(1, myEmail);
-			stmt.setString(2, hisEmail);
+			PreparedStatement statement;
+			statement = connection.prepareStatement(sql);
+			statement.setString(1, myEmail);
+			statement.setString(2, hisEmail);
 
-			ResultSet rs = stmt.executeQuery();
+			ResultSet result = statement.executeQuery();
 			
-			return rs.next();
+			return result.next();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -204,20 +204,20 @@ public class UserModel {
 	/**
 	 * 
 	 * @param email email of the user we want to update his position
-	 * @param lat the new latitude 
-	 * @param lon the new longitude
+	 * @param latitude the new latitude 
+	 * @param longitude the new longitude
 	 * @return true of operation was successful or false otherwise
 	 */
-	public static boolean updateUserPosition(String email, Double lat, Double lon) {
+	public static boolean updateUserPosition(String email, Double latitude, Double longitude) {
 		try{
-			Connection conn = DBConnection.getActiveConnection();
+			Connection connection = DBConnection.getActiveConnection();
 			String sql = "UPDATE user SET `lat` = ? , `long` = ? where `user_email` = ?";
-			PreparedStatement stmt;
-			stmt = conn.prepareStatement(sql);
-			stmt.setDouble(1, lat);
-			stmt.setDouble(2, lon);
-			stmt.setString(3, email);
-			stmt.executeUpdate();
+			PreparedStatement statement;
+			statement = connection.prepareStatement(sql);
+			statement.setDouble(1, latitude);
+			statement.setDouble(2, longitude);
+			statement.setString(3, email);
+			statement.executeUpdate();
 			return true;
 		}catch(SQLException e){
 			e.printStackTrace();
@@ -233,13 +233,13 @@ public class UserModel {
 	 */
 	public static boolean followFriend(String email, String friendEmail) {
 		try{
-			Connection conn = DBConnection.getActiveConnection();
+			Connection connection = DBConnection.getActiveConnection();
 			String sql = "INSERT INTO user_has_friend (`user_email`, `friend_user_email`) VALUES (?, ?)";
-			PreparedStatement stmt;
-			stmt = conn.prepareStatement(sql);
-			stmt.setString(1, email);
-			stmt.setString(2, friendEmail);
-			stmt.executeUpdate();
+			PreparedStatement statement;
+			statement = connection.prepareStatement(sql);
+			statement.setString(1, email);
+			statement.setString(2, friendEmail);
+			statement.executeUpdate();
 			return true;
 		}catch(SQLException e){
 			e.printStackTrace();
@@ -255,13 +255,13 @@ public class UserModel {
 	 */
 	public static boolean unfollowFriend(String email, String friendEmail) {
 		try{
-			Connection conn = DBConnection.getActiveConnection();
+			Connection connection = DBConnection.getActiveConnection();
 			String sql = "DELETE FROM user_has_friend WHERE `user_email` = ? AND `friend_user_email` = ?" ;
-			PreparedStatement stmt;
-			stmt = conn.prepareStatement(sql);
-			stmt.setString(1, email);
-			stmt.setString(2, friendEmail);
-			stmt.executeUpdate();
+			PreparedStatement statement;
+			statement = connection.prepareStatement(sql);
+			statement.setString(1, email);
+			statement.setString(2, friendEmail);
+			statement.executeUpdate();
 			return true;
 		}catch(SQLException e){
 			e.printStackTrace();
@@ -276,19 +276,19 @@ public class UserModel {
 	 */
 	public static PositionModel getLastPosition(String email) {
 		try{
-			PositionModel pos = new PositionModel();
-			Connection conn = DBConnection.getActiveConnection();
+			PositionModel position = new PositionModel();
+			Connection connection = DBConnection.getActiveConnection();
 			String sql = "SELECT `lat`, `long` FROM user WHERE `user_email` = ?";
-			PreparedStatement stmt;
+			PreparedStatement statement;
 			System.out.println(sql);
-			stmt = conn.prepareStatement(sql);
-			stmt.setString(1, email);
+			statement = connection.prepareStatement(sql);
+			statement.setString(1, email);
 			
-			ResultSet rs = stmt.executeQuery();
-			if (rs.next()) {
-				pos.setLat(rs.getDouble("lat"));
-				pos.setLon(rs.getDouble("long"));
-				return pos;
+			ResultSet result = statement.executeQuery();
+			if (result.next()) {
+				position.setLat(result.getDouble("lat"));
+				position.setLon(result.getDouble("long"));
+				return position;
 			}
 			return null;
 		}catch(SQLException e){
@@ -305,23 +305,23 @@ public class UserModel {
 	public static ArrayList<UserModel> getFollowers(String email){
 		try{
 			ArrayList<UserModel> followers = new ArrayList<>();
-			Connection conn = DBConnection.getActiveConnection();
+			Connection connection = DBConnection.getActiveConnection();
 			String sql = "SELECT * FROM `user` WHERE `user_email` IN "
 					+ "(SELECT `user_email` FROM `user_has_friend`"
 					+ "WHERE `friend_user_email`=?)";
-			PreparedStatement stmt = conn.prepareStatement(sql);
-			stmt.setString(1, email);
-			ResultSet rs = stmt.executeQuery();
-			while(rs.next()){
+			PreparedStatement statment = connection.prepareStatement(sql);
+			statment.setString(1, email);
+			ResultSet result = statment.executeQuery();
+			while(result.next()){
 				UserModel user = new UserModel();
-				user.email = rs.getString("user_email");
-				user.pass = rs.getString("password");
-				user.name = rs.getString("username");
-				user.question = rs.getString("security_question");
-				user.answer = rs.getString("security_answer");
-				user.alternative = rs.getString("alternative_email");
-				user.lat = rs.getDouble("lat");
-				user.lon = rs.getDouble("long");
+				user.email = result.getString("user_email");
+				user.pass = result.getString("password");
+				user.name = result.getString("username");
+				user.question = result.getString("security_question");
+				user.answer = result.getString("security_answer");
+				user.alternative = result.getString("alternative_email");
+				user.latitude = result.getDouble("lat");
+				user.longitude = result.getDouble("long");
 				followers.add(user);
 			}
 			return followers;
@@ -340,12 +340,12 @@ public class UserModel {
 	 */
 	public static boolean savePlace(String placeName, String email){
 		try{
-			Connection conn = DBConnection.getActiveConnection();
+			Connection connection = DBConnection.getActiveConnection();
 			String sql = "INSERT INTO user_saves_place (`placeName`, `user_email`) VALUES (?, ?)";
-			PreparedStatement stmt = conn.prepareStatement(sql);
-			stmt.setString(1, placeName);
-			stmt.setString(2, email);
-			stmt.executeUpdate();
+			PreparedStatement statment = connection.prepareStatement(sql);
+			statment.setString(1, placeName);
+			statment.setString(2, email);
+			statment.executeUpdate();
 			return true;
 		}catch(SQLException e){
 			e.printStackTrace();
