@@ -34,14 +34,14 @@ public class PositionModelTest {
 		  return new Object[][] {{"hassan.gamal@Jelena.com", "Serbia", 10.0}} ;
 		  }
 	
-	//@Test(enabled = false)
-	  @Test(dataProvider = "test1")
+	@Test(enabled = false)
+	//  @Test(dataProvider = "test1")
   public void addPlace(String placeName, double rate, int numberOfUsers, String email, double lon, double lat) {
 	  Assert.assertEquals(true, positionModel.addPlace(placeName, rate, numberOfUsers, email, lon, lat));
   }
 
-	//@Test(enabled = false)
-	  @Test(dataProvider = "test2")
+	@Test(enabled = false)
+	//  @Test(dataProvider = "test2")
   public void getComments(String placeName) {
 	  CommentModel comment = new CommentModel() ;
 	  comment.setEmail("osama.fathy@hotmail");
@@ -58,29 +58,29 @@ public class PositionModelTest {
 		  Assert.assertEquals(-1.0, positionModel.getMyRating(email, placeName));
   }
 
-	//@Test(enabled = false)
-	  @Test(dataProvider = "test4")
+	@Test(enabled = false)
+	//  @Test(dataProvider = "test4")
   public void getNearestLocation(Double lat, Double lon) {
 		  PositionModel position = new PositionModel() ;
 		  Assert.assertEquals(position, positionModel.getNearestLocation(lat, lon));
   }
 
-	//@Test(enabled = false)
-	  @Test(dataProvider = "test2")
+	@Test(enabled = false)
+	//  @Test(dataProvider = "test2")
   public void getPlace(String placeName) {
 		  PositionModel position = new PositionModel() ;
 		  Assert.assertEquals(position, positionModel.getPlace(placeName));
   }
 
-	//@Test(enabled = false)
-	  @Test(dataProvider = "test2")
+	@Test(enabled = false)
+	//  @Test(dataProvider = "test2")
   public void placeFound(String placeName) {
 		  PositionModel position = new PositionModel() ;
 		  Assert.assertEquals(position, positionModel.placeFound(placeName));
   }
 
-	//@Test(enabled = false)
-	  @Test(dataProvider = "test5")
+	@Test(enabled = false)
+	//  @Test(dataProvider = "test5")
   public void ratePlace(String email, String placeName, double rate) {
 		  Assert.assertEquals(true, positionModel.ratePlace(email, placeName, rate));
   }

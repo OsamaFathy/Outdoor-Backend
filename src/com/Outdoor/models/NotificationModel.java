@@ -12,6 +12,14 @@ public class NotificationModel {
 	private String type, user_email, owner_user_email, status;
 	private int checkinID ;
 	
+	/**
+	 * 
+	 * @param type the notification type like or comment
+	 * @param user_email the user who invoked the like or comment
+	 * @param checkinID the id of the check-in on which the user liked or commented
+	 * @param owner_user_email the owner of the check-in i.e. the notification would go to this user
+	 * @return true if added successfully or false otherwise
+	 */
 	public static boolean addNotification(String type, String user_email, int checkinID, String owner_user_email){
 		try{
 			Connection conn = DBConnection.getActiveConnection();
@@ -32,6 +40,11 @@ public class NotificationModel {
 		return false;
 	}
 	
+	/**
+	 * 
+	 * @param email the email of the user whose notifications would be retrieved 
+	 * @return an arrayList of notifications or null if something failed
+	 */
 	public static ArrayList<NotificationModel> getMyNotifications(String email){
 		try{
 			ArrayList<NotificationModel> notifications = new ArrayList<>();

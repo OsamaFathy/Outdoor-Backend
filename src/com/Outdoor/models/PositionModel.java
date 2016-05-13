@@ -17,7 +17,12 @@ public class PositionModel {
 	private double lat;
 	private double lon;
 	
-
+	/**
+	 * This functions gets the nearest place to the current place of the user given by his longitude and latitude
+	 * @param lat latitude of the user
+	 * @param lon longitude of the user
+	 * @return the nearest position
+	 */
 	public static PositionModel getNearestLocation(Double lat, Double lon) {
 		try{
 			Connection conn = DBConnection.getActiveConnection();
@@ -52,6 +57,12 @@ public class PositionModel {
 		}
 		return null;
 	}
+	
+	/**
+	 * gets the place whose name is given
+	 * @param placeName the name of the place we want to get
+	 * @return an object of positionModel class whose name is given in the parameter
+	 */
 	public static PositionModel getPlace(String placeName) {
 		try{
 			Connection conn = DBConnection.getActiveConnection();
@@ -76,7 +87,14 @@ public class PositionModel {
 		}
 		return null;
 	}
-
+	
+	/**
+	 * 
+	 * @param email the email of the user who gives the rate
+	 * @param placeName the name of the place to be rated
+	 * @param rate the rate given by the user
+	 * @return true if operation done successfully or false otherwise
+	 */
 	public static boolean ratePlace(String email, String placeName, double rate) {
 		try{
 			Connection conn = DBConnection.getActiveConnection();
@@ -106,6 +124,12 @@ public class PositionModel {
 		return false;
 	}
 	
+	/**
+	 * 
+	 * @param email the email of the user
+	 * @param placeName the place of the rated place
+	 * @return the rating given by the given user to the given place
+	 */
 	public static Double getMyRating(String email, String placeName) {
 		try{
 			Connection conn = DBConnection.getActiveConnection();
@@ -128,6 +152,11 @@ public class PositionModel {
 		return -1.0;
 	}
 	
+	/**
+	 * 
+	 * @param placeName name of the place we want to find in our system
+	 * @return true if found false otherwise
+	 */
 	public static boolean placeFound(String placeName) {
 		try{
 			Connection conn = DBConnection.getActiveConnection();
@@ -150,7 +179,16 @@ public class PositionModel {
 		}
 		return false;
 	}	
-	
+	/**
+	 * 
+	 * @param placeName the name of the new place
+	 * @param rate the rating of the place
+	 * @param numberOfUsers number of user visited this place before
+	 * @param email the email of the user who created this place
+	 * @param lon the longitude of the new place
+	 * @param lat the latitude of the new place
+	 * @return true of added successfully or false otherwise
+	 */
 	public static boolean addPlace(String placeName, double rate, int numberOfUsers, String email, double lon, double lat) {
 		try{
 			Connection conn = DBConnection.getActiveConnection();
@@ -189,6 +227,11 @@ public class PositionModel {
 		return false;
 	}
 	
+	/**
+	 * 
+	 * @param placeName the name of the place we want to retrieve comments of the users on it
+	 * @return an arrayList of comments on this place or null of something failed
+	 */
 	public static ArrayList<CommentModel> getComments(String placeName){
 		try{
 			ArrayList<CommentModel> comments = new ArrayList<>();

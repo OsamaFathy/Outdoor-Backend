@@ -18,7 +18,13 @@ public class CheckinModel {
 	int likes;
 	int likedByMe;
 	
-
+	/**
+	 * This function is called when a user enters the profile of another user so we retrieve the comments of the second user
+	 * and also check if the entering user likes any of these check-ins of the profile owner
+	 * @param email email of the user to get check-ins 
+	 * @param email2 email of the user entering the profile 
+	 * @return an arrayList of check-ins or null if something failed
+	 */
 	public static ArrayList<CheckinModel> getMyCheckins(String email, String email2){
 		try{
 			ArrayList<CheckinModel> checkins = new ArrayList<>();
@@ -71,6 +77,11 @@ public class CheckinModel {
 		return null;
 	}
 	
+	/**
+	 * get the home page which is full of check-ins of friends of the user
+	 * @param email the email of the user opening his home page
+	 * @return an arrayList of check-ins or null if something failed
+	 */
 	public static ArrayList<CheckinModel> getFriendsCheckins(String email){
 		try{
 			ArrayList<CheckinModel> checkins = new ArrayList<>();
@@ -124,6 +135,12 @@ public class CheckinModel {
 		return null;
 	}
 	
+	/**
+	 * 
+	 * @param email email of the user who made the like or unlike
+	 * @param checkin_ID the ID of the liked or unliked check-in
+	 * @return true if operation was successful or false otherwise
+	 */
 	public static boolean addLike(String email, int checkin_ID){
 		try{
 			Connection conn = DBConnection.getActiveConnection();
@@ -173,6 +190,13 @@ public class CheckinModel {
 		return false;
 	}
 	
+	/**
+	 * 
+	 * @param email email of the user adding the check-in
+	 * @param status the content of the check-in
+	 * @param placeName the name of the place in which the user had checked-in
+	 * @return true if operation was successful or false otherwise
+	 */
 	public static boolean addCheckin(String email, String status, String placeName){
 		try{
 			Connection conn = DBConnection.getActiveConnection();
@@ -195,7 +219,12 @@ public class CheckinModel {
 		}
 		return false;
 	}
-
+	
+	/**
+	 * 
+	 * @param checkinID the ID of the check-in we want to retrieve its comments
+	 * @return an arrayList of comments or false otherwise
+	 */
 	public static ArrayList<CommentModel> getComments(int checkinID){
 		try{
 			ArrayList<CommentModel> comments = new ArrayList<>();
@@ -221,6 +250,11 @@ public class CheckinModel {
 		return null ;
 	}
 	
+	/**
+	 * 
+	 * @param checkinID the ID of the check-in we want to retrieve
+	 * @return an object of checkinModel or null if something failed
+	 */
 	public static CheckinModel getCheckin(int checkinID){
 		CheckinModel checkin = null;
 		try {

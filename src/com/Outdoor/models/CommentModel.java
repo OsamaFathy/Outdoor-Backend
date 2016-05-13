@@ -12,6 +12,14 @@ public class CommentModel {
 	private String email ;
 	private Date date;
 	private String username ;
+	
+	/**
+	 * 
+	 * @param text content of the comment
+	 * @param email email of the user who added the comment
+	 * @param checkinID the ID of the check-in which the user commented on
+	 * @return true of added successfully or false otherwise
+	 */
 	public static boolean addCommentToCheckin(String text, String email, int checkinID){
 		try{
 			Connection conn = DBConnection.getActiveConnection();
@@ -48,6 +56,13 @@ public class CommentModel {
 		return false;
 	}
 	
+	/**
+	 * 
+	 * @param text content of the comment
+	 * @param email email of the user who added the comment
+	 * @param placeName the name of the place which the user commented on
+	 * @return true of added successfully or false otherwise
+	 */
 	public static boolean addCommentToPlace(String text, String email, String placeName){
 		try{
 			Connection conn = DBConnection.getActiveConnection();
@@ -71,6 +86,13 @@ public class CommentModel {
 		return false;
 	}
 	
+	/**
+	 * 
+	 * @param text content of the comment
+	 * @param email email of the user who added the comment
+	 * @param brandID the ID of the brand which the user commented on
+	 * @return true of added successfully or false otherwise
+	 */
 	public static boolean addCommentToBrand(String text, String email, int brandID){
 		try{
 			Connection conn = DBConnection.getActiveConnection();

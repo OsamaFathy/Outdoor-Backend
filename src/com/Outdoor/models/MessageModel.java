@@ -13,6 +13,13 @@ public class MessageModel {
 	private int messageID ;
 	private Date date ;
 	
+	/**
+	 * 
+	 * @param text content of the message
+	 * @param user_email the receiver email
+	 * @param sender_user_email the sender email
+	 * @return true if sent successfully or false otherwise
+	 */
 	public static boolean addMessage(String text, String user_email, String sender_user_email){
 		try{
 			Connection conn = DBConnection.getActiveConnection();
@@ -37,6 +44,11 @@ public class MessageModel {
 		return false;
 	}
 	
+	/**
+	 * 
+	 * @param email the email of the user whose messages would be retrieved
+	 * @return an arrayList of messages or null if something failed
+	 */
 	public static ArrayList<MessageModel> getMyMessages(String email){
 		try{
 			ArrayList<MessageModel> messages = new ArrayList<>();

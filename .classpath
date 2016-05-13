@@ -8,6 +8,9 @@
 			<attribute name="owner.project.facets" value="java"/>
 		</attributes>
 	</classpathentry>
+<<<<<<< HEAD
 	<classpathentry kind="con" path="org.testng.TESTNG_CONTAINER"/>
+=======
+>>>>>>> 8a795f078c99c0fc8d4f9d0b9d8879f343f8b6ec
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>

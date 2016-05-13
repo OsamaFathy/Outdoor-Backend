@@ -1,4 +1,4 @@
-	package com.Outdoor.models;
+package com.Outdoor.models;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -63,7 +63,17 @@ public class UserModel {
 	public void setLon(Double lon) {
 		this.lon = lon;
 	}
-
+	
+	/**
+	 * 
+	 * @param name username of user
+	 * @param email his email
+	 * @param pass his password
+	 * @param question his security question
+	 * @param ans his secrity answer
+	 * @param alternative his alternative email
+	 * @return the newly created user or null of case of error
+	 */
 	public static UserModel addNewUser(String name, String email, String pass, String question, String ans,
 			String alternative) {
 		try {
@@ -102,8 +112,12 @@ public class UserModel {
 		return null;
 	}
 
-	
-	
+	/**
+	 * 
+	 * @param email email of the user who wants to log-in
+	 * @param pass password of the user who want to log-in
+	 * @return an object of type userModel if logged-in successfully of null otherwise
+	 */
 	public static UserModel login(String email, String pass) {
 		try {
 			Connection conn = DBConnection.getActiveConnection();
@@ -135,7 +149,12 @@ public class UserModel {
 		}
 		return null;
 	}
-
+	
+	/**
+	 * 
+	 * @param email email of the user we want to get his user name
+	 * @return the user name of the given user of null if something failed
+	 */
 	public static String getUserName(String email) {
 		try {
 			Connection conn = DBConnection.getActiveConnection();
@@ -157,6 +176,12 @@ public class UserModel {
 		return null;
 	}
 	
+	/**
+	 * checks if the first user follows the second user
+	 * @param myEmail email of the first user
+	 * @param hisEmail email of the second user
+	 * @return true if he follows him or false otherwise
+	 */
 	public static boolean Followed(String myEmail, String hisEmail) {
 		try {
 			Connection conn = DBConnection.getActiveConnection();
@@ -175,7 +200,14 @@ public class UserModel {
 		}
 		return false;
 	}
-		
+	
+	/**
+	 * 
+	 * @param email email of the user we want to update his position
+	 * @param lat the new latitude 
+	 * @param lon the new longitude
+	 * @return true of operation was successful or false otherwise
+	 */
 	public static boolean updateUserPosition(String email, Double lat, Double lon) {
 		try{
 			Connection conn = DBConnection.getActiveConnection();
@@ -193,6 +225,12 @@ public class UserModel {
 		return false;
 	}
 	
+	/**
+	 * 
+	 * @param email email of the user who wants to follow the other user
+	 * @param friendEmail email of the user who will be followed by the first user
+	 * @return true if operation was successful or false otherwise
+	 */
 	public static boolean followFriend(String email, String friendEmail) {
 		try{
 			Connection conn = DBConnection.getActiveConnection();
@@ -209,6 +247,12 @@ public class UserModel {
 		return false;
 	}
 	
+	/**
+	 * 
+	 * @param email email of the user who wants to unfollow the other user
+	 * @param friendEmail email of the user who will be unfollowed by the first user
+	 * @return true if operation was successful or false otherwise
+	 */
 	public static boolean unfollowFriend(String email, String friendEmail) {
 		try{
 			Connection conn = DBConnection.getActiveConnection();
@@ -224,7 +268,12 @@ public class UserModel {
 		}
 		return false;
 	}
-
+	
+	/**
+	 * 
+	 * @param email email of user we want to get his last position
+	 * @return an object of positionModel with the longitude and latitude of last position of the given user
+	 */
 	public static PositionModel getLastPosition(String email) {
 		try{
 			PositionModel pos = new PositionModel();
@@ -248,6 +297,11 @@ public class UserModel {
 		return null;
 	}
 	
+	/**
+	 * 
+	 * @param email email of the user want to retrieve his followers
+	 * @return an arrayList of users who follow the given user or null something failed
+	 */
 	public static ArrayList<UserModel> getFollowers(String email){
 		try{
 			ArrayList<UserModel> followers = new ArrayList<>();
@@ -277,6 +331,13 @@ public class UserModel {
 		return null;
 	}
 	
+	
+	/**
+	 * 
+	 * @param placeName the name of the place to be saved by the user
+	 * @param email email of the user who wants to save the place
+	 * @return true if operation was successful or false otherwise
+	 */
 	public static boolean savePlace(String placeName, String email){
 		try{
 			Connection conn = DBConnection.getActiveConnection();
